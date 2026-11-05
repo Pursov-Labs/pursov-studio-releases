@@ -230,8 +230,8 @@ try {
         $rollbackLog = Get-Content -LiteralPath (Join-Path $OutputDirectory '02-forced-rollback.log') -Raw
         $initializeIndex = $rollbackLog.IndexOf('CustomActionSchedule(Action=InitializeInstall,')
         $failureIndex = $rollbackLog.IndexOf('CustomActionSchedule(Action=TestForcedFailure,')
-        $rollbackIndex = $rollbackLog.LastIndexOf('CustomActionSchedule(Action=RollbackLegacy,')
-        Check ($initializeIndex -ge 0 -and $failureIndex -gt $initializeIndex -and $rollbackIndex -gt $failureIndex) 'Failure occurs after initializer and executes rollback helper'
+        $rollbackIndex = $rollbackLog.LastIndexOf('CustomActionRollback(Action=RollbackLegacy,')
+        Check ($initializeIndex -ge 0 -and $failureIndex -gt $initializeIndex -and $rollbackIndex -gt $failureIndex -and $rollbackLog.Contains('CustomAction TestForcedFailure returned actual error code 42')) 'Failure occurs after initializer and executes rollback helper'
         Assert-Installation $previous.Version
         Check ((Service-Sddl) -ceq $serviceSecurityBefore) 'Rollback restores broker service access rights'
         Check ((Tree-Digest $installRoot) -ceq $installedBefore) 'Rollback restores every original installed file byte-for-byte'
