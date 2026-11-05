@@ -63,8 +63,9 @@ if ($NoReleaseSignature) {
 else { & (Join-Path $PSScriptRoot 'sign-release.ps1') -Package $msi -Version $Version -Destination $release }
 $sourceRoot = Join-Path $projectRoot ('output/source-staging/' + $Version + '-' + [Guid]::NewGuid().ToString('N'))
 New-Item -ItemType Directory -Path $sourceRoot -Force | Out-Null
-foreach ($folder in @('src','scripts','tests','installer','payload/licenses')) {
+foreach ($folder in @('src','scripts','tests','installer','payload/licenses','.github','docs')) {
     $inputRoot = Join-Path $projectRoot $folder
+    if (-not (Test-Path -LiteralPath $inputRoot)) { continue }
     foreach ($file in Get-ChildItem -LiteralPath $inputRoot -Recurse -File) {
         $relative = [IO.Path]::GetRelativePath($projectRoot, $file.FullName)
         if ($relative -match '(^|[\\/])(bin|obj|__pycache__)([\\/]|$)' -or $relative -match '\.(user|log|pyc)$' -or $relative -in @('tests\zapret-self-test.json','installer\GeneratedPayload.wxs')) { continue }
@@ -73,7 +74,7 @@ foreach ($folder in @('src','scripts','tests','installer','payload/licenses')) {
         Copy-Item -LiteralPath $file.FullName -Destination $target
     }
 }
-foreach ($file in @('README_RU.md','THIRD_PARTY_LICENSES.md','LICENSE','.gitignore','PRODUCT.md','DESIGN.md','.impeccable/design.json','runtime/tg_runner.py','runtime/tg_probe.py','runtime/tg-dependencies.lock.json','payload/zapret.lock.json','payload/sources.lock.json')) {
+foreach ($file in @('README.md','README_RU.md','THIRD_PARTY_LICENSES.md','LICENSE','.gitignore','PRODUCT.md','DESIGN.md','.impeccable/design.json','runtime/tg_runner.py','runtime/tg_probe.py','runtime/tg-dependencies.lock.json','payload/zapret.lock.json','payload/sources.lock.json')) {
     $source = Join-Path $projectRoot $file
     if (-not (Test-Path -LiteralPath $source)) { continue }
     $target = Join-Path $sourceRoot $file

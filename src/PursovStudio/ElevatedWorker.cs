@@ -184,7 +184,7 @@ public static class ElevatedWorker
         }
     }
 
-    private static void PreserveSettings(string current, string destination)
+    internal static void PreserveSettings(string current, string destination)
     {
         foreach (string relative in new[]
         {

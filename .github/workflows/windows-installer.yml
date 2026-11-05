@@ -1,0 +1,56 @@
+name: Windows installer lifecycle
+
+on:
+  workflow_dispatch:
+    inputs:
+      previous_tag:
+        description: Published baseline prerelease tag
+        required: true
+        default: v1.9.99-test
+        type: string
+      candidate_tag:
+        description: Published candidate prerelease tag
+        required: true
+        default: v2.0.0-preview
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  lifecycle:
+    # Server 2025 is an isolated MSI transaction test, not Windows 10/11 certification.
+    runs-on: windows-2025
+    timeout-minutes: 15
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Download published signed packages
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PREVIOUS_TAG: ${{ inputs.previous_tag }}
+          CANDIDATE_TAG: ${{ inputs.candidate_tag }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          foreach ($item in @(@('previous',$env:PREVIOUS_TAG),@('candidate',$env:CANDIDATE_TAG))) {
+            if ($item[1] -notmatch '^v[0-9][A-Za-z0-9._-]{0,63}$') { throw 'Invalid release tag' }
+            $destination = Join-Path $env:RUNNER_TEMP ('pursov-packages/' + $item[0])
+            New-Item -ItemType Directory -Path $destination -Force | Out-Null
+            gh release download $item[1] --repo Pursov-Labs/pursov-studio-releases --dir $destination --pattern '*.msi' --pattern release.json --pattern release.sig
+            if ($LASTEXITCODE -ne 0) { throw ('Release download failed: ' + $item[1]) }
+          }
+      - name: Install, force rollback, upgrade, and uninstall
+        run: |
+          ./tests/installer/Test-Lifecycle.ps1 -IsolatedMachine -PreviousDirectory "$env:RUNNER_TEMP/pursov-packages/previous" -CandidateDirectory "$env:RUNNER_TEMP/pursov-packages/candidate" -OutputDirectory "$env:RUNNER_TEMP/pursov-installer-evidence"
+      - name: Retain transaction logs and report
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: windows-server-2025-installer-${{ github.run_id }}
+          path: ${{ runner.temp }}/pursov-installer-evidence
+          if-no-files-found: warn
+          retention-days: 14

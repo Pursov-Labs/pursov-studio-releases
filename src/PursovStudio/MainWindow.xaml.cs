@@ -114,7 +114,13 @@ public partial class MainWindow : Window
     private void RefreshView()
     {
         if (allowClose || Dispatcher.HasShutdownStarted) return;
-        string state = uiError != null || core.NeedsSettingsRecovery ? "attention" : core.IsBusy ? "working" : core.IsConnected ? "on" : "off";
+        string state = uiError != null || core.NeedsSettingsRecovery ? "attention" : core.Phase switch
+        {
+            ConnectionPhase.Partial or ConnectionPhase.Error => "attention",
+            ConnectionPhase.Starting or ConnectionPhase.Checking or ConnectionPhase.Recovering or ConnectionPhase.Stopping => "working",
+            ConnectionPhase.Connected => "on",
+            _ => "off"
+        };
         if (trayState != state) { tray.Icon = trayIcons[state]; trayState = state; }
         string action = initializing && !core.IsBusy ? "Подготовка" : core.MainAction;
         trayAction.Text = action;

@@ -34,6 +34,19 @@ internal static class Program
             {
                 await Task.Delay(100);
                 var core = Field<CoreController>(window, "core");
+                foreach (var (phase, expected) in new[]
+                {
+                    (ConnectionPhase.Partial, "attention"), (ConnectionPhase.Error, "attention"),
+                    (ConnectionPhase.Starting, "working"), (ConnectionPhase.Checking, "working"),
+                    (ConnectionPhase.Recovering, "working"), (ConnectionPhase.Stopping, "working"),
+                    (ConnectionPhase.Connected, "on"), (ConnectionPhase.Off, "off")
+                })
+                {
+                    typeof(CoreController).GetProperty("Phase")!.SetValue(core, phase);
+                    Refresh(window);
+                    if (Field<string>(window, "trayState") != expected)
+                        throw new InvalidOperationException("Tray must represent connection phase: " + phase);
+                }
                 object contrastPalette = Field<object>(window, "palette");
                 contrastPalette.GetType().GetMethod("ApplyTheme", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(contrastPalette, new object[] { "contrast" });
                 if (((SolidColorBrush)application.Resources["Accent"]).Color != SystemColors.WindowTextColor

@@ -29,7 +29,9 @@ public static class InstallService
                 .OrderByDescending(x => Version.Parse(Path.GetFileName(x))).First();
             string version = Path.GetFileName(bundled);
             string destination = Path.Combine(AppPaths.ZapretRoot, version);
-            CopyTree(bundled, destination, true, true);
+            string? current = File.Exists(AppPaths.ZapretActiveFile) ? ElevatedWorker.ReadActive().Directory
+                : Directory.Exists(destination) ? destination : null;
+            InstallPayload(bundled, destination, current);
             ElevatedWorker.WriteProtectedJson(AppPaths.ZapretActiveFile, new InstalledVersion(version, destination));
             BrokerService.ConfigureServiceSecurity();
             Environment.ExitCode = 0;
@@ -45,6 +47,44 @@ public static class InstallService
     public static void SecureDirectory(string path)
     {
         ElevatedWorker.CreateProtectedDirectory(path, path.Equals(AppPaths.InstallRoot, StringComparison.OrdinalIgnoreCase) || path.Equals(AppPaths.SharedRoot, StringComparison.OrdinalIgnoreCase));
+    }
+
+    internal static void InstallPayload(string bundled, string destination, string? current)
+    {
+        string parent = Path.GetDirectoryName(Path.GetFullPath(destination))!;
+        string transaction = Guid.NewGuid().ToString("N");
+        string staged = Path.Combine(parent, ".prepare-" + transaction);
+        string previous = Path.Combine(parent, ".previous-" + transaction);
+        try
+        {
+            CopyTree(bundled, staged, false, true);
+            if (current != null)
+            {
+                ElevatedWorker.AssertProtectedTree(current);
+                ElevatedWorker.PreserveSettings(current, staged);
+            }
+            ElevatedWorker.AssertProtectedTree(staged);
+            if (Directory.Exists(destination)) Directory.Move(destination, previous);
+            try { Directory.Move(staged, destination); }
+            catch
+            {
+                if (Directory.Exists(previous)) Directory.Move(previous, destination);
+                throw;
+            }
+            if (Directory.Exists(previous))
+            {
+                ElevatedWorker.AssertProtectedTree(previous);
+                Directory.Delete(previous, true);
+            }
+        }
+        finally
+        {
+            if (Directory.Exists(staged))
+            {
+                ElevatedWorker.AssertProtectedTree(staged);
+                Directory.Delete(staged, true);
+            }
+        }
     }
 
     private static void RejectReparseChain(string path)
