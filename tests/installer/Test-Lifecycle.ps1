@@ -177,6 +177,12 @@ try {
     $report.packages = @($previous, $candidate)
     $testPackage = Make-FailingCopy $candidate.Package
     Check ((Hash $candidate.Package) -eq $candidate.Sha256 -and (Hash $testPackage) -ne $candidate.Sha256) 'Failure injection changes only the isolated test copy'
+    $testDatabase = $installer.OpenDatabase($testPackage, 0)
+    try {
+        $action = @(Read-Rows $testDatabase 'SELECT `Type`, `Target` FROM `CustomAction` WHERE `Action` = ''TestForcedFailure''')
+        Check ($action.Count -eq 1 -and $action[0][0] -eq '3106' -and $action[0][1] -eq '"[System64Folder]cmd.exe" /d /c exit 42') 'Failure action persists as deferred SYSTEM exit 42'
+    }
+    finally { $null = [Runtime.InteropServices.Marshal]::FinalReleaseComObject($testDatabase) }
     $report.failureInjection = [ordered]@{ sha256 = Hash $testPackage; action = 'Deferred SYSTEM cmd.exe exit 42, after InitializeInstall, before commit'; published = $false }
     if ($PrepareOnly) {
         $report.passed = $true
@@ -188,9 +194,12 @@ try {
         Assert-Installation $previous.Version
         Start-Service -Name $serviceName
         (Get-Service -Name $serviceName).WaitForStatus('Running', [TimeSpan]::FromSeconds(15))
+        $running = (Get-Service -Name $serviceName).Status.ToString()
         Stop-Service -Name $serviceName
         (Get-Service -Name $serviceName).WaitForStatus('Stopped', [TimeSpan]::FromSeconds(15))
-        Check $true 'Installed broker starts and stops without starting a network component'
+        $stopped = (Get-Service -Name $serviceName).Status.ToString()
+        $report.brokerSmoke = @{ afterStart = $running; afterStop = $stopped }
+        Check ($running -eq 'Running' -and $stopped -eq 'Stopped') 'Installed broker reaches Running then Stopped'
 
         New-Item -ItemType Directory -Path $userRoot | Out-Null
         $settings = Join-Path $userRoot 'settings.json'
