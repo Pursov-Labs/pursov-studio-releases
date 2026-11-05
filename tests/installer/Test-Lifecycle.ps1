@@ -117,7 +117,7 @@ function Make-FailingCopy([string]$Package) {
         if ($sequence.CommitLegacy -ne $failureSequence -or $sequence.InstallFinalize -le ($failureSequence + 1)) { throw 'Unexpected installer sequence; review the failure injection before use.' }
         Execute-Sql $database ('UPDATE `InstallExecuteSequence` SET `Sequence` = ' + ($failureSequence + 1) + " WHERE `Action` = 'CommitLegacy'")
         # EXE + directory source (34), deferred (1024), no impersonation (2048).
-        Execute-Sql $database 'INSERT INTO `CustomAction` (`Action`, `Type`, `Source`, `Target`) VALUES (''TestForcedFailure'', 3106, ''System64Folder'', ''"[System64Folder]cmd.exe" /d /c exit 42'')'
+        Execute-Sql $database 'INSERT INTO `CustomAction` (`Action`, `Type`, `Source`, `Target`) VALUES (''TestForcedFailure'', 3106, ''INSTALLFOLDER'', ''"[System64Folder]cmd.exe" /d /c exit 42'')'
         Execute-Sql $database ('INSERT INTO `InstallExecuteSequence` (`Action`, `Condition`, `Sequence`) VALUES (''TestForcedFailure'', ''NOT REMOVE~="ALL"'', ' + $failureSequence + ')')
         $summary = $database.SummaryInformation(1)
         try {
@@ -184,8 +184,10 @@ try {
     Check ((Hash $candidate.Package) -eq $candidate.Sha256 -and (Hash $testPackage) -ne $candidate.Sha256) 'Failure injection changes only the isolated test copy'
     $testDatabase = $installer.OpenDatabase($testPackage, 0)
     try {
-        $action = @(Read-Rows $testDatabase 'SELECT `Type`, `Target` FROM `CustomAction` WHERE `Action` = ''TestForcedFailure''')
-        Check ($action.Count -eq 1 -and $action[0][0] -eq '3106' -and $action[0][1] -eq '"[System64Folder]cmd.exe" /d /c exit 42') 'Failure action persists as deferred SYSTEM exit 42'
+        $action = @(Read-Rows $testDatabase 'SELECT `Type`, `Target`, `Source` FROM `CustomAction` WHERE `Action` = ''TestForcedFailure''')
+        Check ($action.Count -eq 1 -and $action[0][0] -eq '3106' -and $action[0][1] -eq '"[System64Folder]cmd.exe" /d /c exit 42' -and $action[0][2] -eq 'INSTALLFOLDER') 'Failure action persists as deferred SYSTEM exit 42'
+        $workingDirectory = @(Read-Rows $testDatabase 'SELECT `Directory` FROM `Directory` WHERE `Directory` = ''INSTALLFOLDER''')
+        Check ($workingDirectory.Count -eq 1) 'Failure action uses an existing Directory table entry'
     }
     finally { $null = [Runtime.InteropServices.Marshal]::FinalReleaseComObject($testDatabase) }
     $report.failureInjection = [ordered]@{ sha256 = Hash $testPackage; action = 'Deferred SYSTEM cmd.exe exit 42, after InitializeInstall, before commit'; published = $false }
