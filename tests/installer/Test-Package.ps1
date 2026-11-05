@@ -26,6 +26,12 @@ $properties = @{}
 Read-Table 'Property' @('Property','Value') | ForEach-Object { $properties[$_.Property] = $_.Value }
 Check ($properties.ALLUSERS -eq '1') 'MSI must install per machine'
 Check ($properties.ProductName -eq 'PURSOV STUDIO') 'Product name mismatch'
+$launch = @(Read-Table 'LaunchCondition' @('Condition'))
+Check (@($launch | Where-Object { $_.Condition -match '\bWindowsBuild\b' }).Count -eq 0 -and @($launch | Where-Object { $_.Condition -match 'PURSOV_WINDOWS_BUILD >= 19045' -and $_.Condition -match 'Msix64' }).Count -eq 1) 'OS gate must use the real registry build, not compatibility-limited WindowsBuild'
+$registry = @(Read-Table 'RegLocator' @('Signature_','Root','Key','Name','Type') | Where-Object Signature_ -eq 'CurrentWindowsBuild')
+Check ($registry.Count -eq 1 -and $registry[0].Root -eq '2' -and $registry[0].Key -eq 'SOFTWARE\Microsoft\Windows NT\CurrentVersion' -and $registry[0].Name -eq 'CurrentBuildNumber' -and $registry[0].Type -eq '18') 'OS build must come from native 64-bit HKLM CurrentBuildNumber'
+$search = @(Read-Table 'AppSearch' @('Property','Signature_') | Where-Object Property -eq 'PURSOV_WINDOWS_BUILD')
+Check ($search.Count -eq 1 -and $search[0].Signature_ -eq 'CurrentWindowsBuild') 'OS build registry search must populate the launch property'
 $services = @(Read-Table 'ServiceInstall' @('Name','ServiceType','StartType','StartName','Arguments'))
 Check ($services.Count -eq 1 -and $services[0].Name -eq 'PursovStudioBroker') 'Expected one broker service'
 Check ($services[0].ServiceType -eq '16' -and $services[0].StartType -eq '3' -and $services[0].StartName -eq 'LocalSystem' -and $services[0].Arguments -eq '--service') 'Service must be demand-start LocalSystem own-process'
@@ -42,6 +48,7 @@ foreach ($name in @('BackupLegacy','RollbackLegacy','InitializeInstall','CommitL
 }
 $sequence = @{}
 Read-Table 'InstallExecuteSequence' @('Action','Sequence') | ForEach-Object { $sequence[$_.Action] = [int]$_.Sequence }
+Check ($sequence.AppSearch -lt $sequence.LaunchConditions) 'Resolve actual OS build before evaluating launch conditions'
 Check ($sequence.BackupLegacy -lt $sequence.CreateFolders) 'Root security must be established before folder creation'
 Check ($sequence.InitializeInstall -gt $sequence.InstallServices) 'Initialize ACL and service security after service installation'
 Check ($sequence.RollbackLegacy -lt $sequence.BackupLegacy) 'Rollback must be queued before snapshot changes'
