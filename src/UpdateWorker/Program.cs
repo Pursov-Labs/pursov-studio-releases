@@ -64,8 +64,6 @@ internal static class Program
     {
         string shared = Path.GetDirectoryName(SharedRoot);
         string snapshotRoot = Path.Combine(shared, "installer-rollback");
-        string snapshot = Path.Combine(snapshotRoot, id);
-        string manifest = Path.Combine(snapshot, "snapshot.json");
         string zapret = Path.Combine(shared, "zapret");
         string active = Path.Combine(shared, "zapret-active.json");
         if (operation == "--backup-install")
@@ -86,11 +84,13 @@ internal static class Program
             PrepareInstallRoot(installRoot);
             PrepareInstallRoot(shared);
             SecureDirectory(snapshotRoot);
-            if (Directory.Exists(snapshot))
-            {
-                if (File.Exists(manifest)) throw new IOException("Предыдущая установка не завершена. Выполните её восстановление в Windows.");
-                DeleteSnapshot(snapshotRoot, snapshot);
-            }
+            if (FindPendingSnapshot(snapshotRoot, id) != null)
+                throw new IOException("Предыдущая установка не завершена. Выполните её восстановление в Windows.");
+            if (File.Exists(Path.Combine(shared, "legacy-backup", "pending")))
+                throw new IOException("Миграция прежней установки не завершена. Нужна проверка резервной копии.");
+            // A retired snapshot can still contain a loaded driver. Never reuse its path.
+            string snapshot = Path.Combine(snapshotRoot, id + "-" + Guid.NewGuid().ToString("N"));
+            string manifest = Path.Combine(snapshot, "snapshot.json");
             SecureDirectory(snapshot);
             var record = new InstallSnapshot { hadZapret = Directory.Exists(zapret), hadActive = File.Exists(active) };
             if (record.hadZapret) { AssertProtectedTree(zapret); CopyTree(zapret, Path.Combine(snapshot, "zapret"), false); }
@@ -103,29 +103,31 @@ internal static class Program
             MigrateLegacy("--backup-legacy");
             return;
         }
-        if (!File.Exists(manifest)) return;
-        AssertProtectedTree(snapshot);
+        string pendingSnapshot = FindPendingSnapshot(snapshotRoot, id);
+        if (pendingSnapshot == null) return;
+        string pendingManifest = Path.Combine(pendingSnapshot, "snapshot.json");
+        AssertProtectedTree(pendingSnapshot);
         if (operation == "--restore-install")
         {
             InstallSnapshot record;
-            using (var stream = File.OpenRead(manifest)) record = (InstallSnapshot)new DataContractJsonSerializer(typeof(InstallSnapshot)).ReadObject(stream);
+            using (var stream = File.OpenRead(pendingManifest)) record = (InstallSnapshot)new DataContractJsonSerializer(typeof(InstallSnapshot)).ReadObject(stream);
             if (Directory.Exists(zapret))
             {
                 AssertProtectedTree(zapret);
-                Directory.Move(zapret, Path.Combine(snapshot, "discarded-zapret"));
+                Directory.Move(zapret, Path.Combine(pendingSnapshot, "discarded-zapret"));
             }
-            if (record.hadZapret) Directory.Move(Path.Combine(snapshot, "zapret"), zapret);
+            if (record.hadZapret) Directory.Move(Path.Combine(pendingSnapshot, "zapret"), zapret);
             if (File.Exists(active))
             {
                 if ((File.GetAttributes(active) & FileAttributes.ReparsePoint) != 0) throw new IOException("Ссылка вместо конфигурации запрещена.");
                 File.Delete(active);
             }
-            if (record.hadActive) File.Move(Path.Combine(snapshot, "zapret-active.json"), active);
+            if (record.hadActive) File.Move(Path.Combine(pendingSnapshot, "zapret-active.json"), active);
             MigrateLegacy("--restore-legacy");
         }
         else MigrateLegacy("--commit-legacy");
-        File.Delete(manifest);
-        DeleteSnapshot(snapshotRoot, snapshot);
+        File.Delete(pendingManifest);
+        DeleteCompletedSnapshot(snapshotRoot, pendingSnapshot);
     }
 
     private static void PrepareInstallRoot(string path)
@@ -135,12 +137,33 @@ internal static class Program
         SecureDirectory(path);
     }
 
-    private static void DeleteSnapshot(string root, string path)
+    private static string FindPendingSnapshot(string root, string id)
+    {
+        if (!Directory.Exists(root)) return null;
+        AssertProtectedDirectory(root);
+        string found = null;
+        // Include the original fixed-name format so an already queued transaction remains recoverable.
+        foreach (string directory in Directory.GetDirectories(root, id + "*"))
+        {
+            string name = Path.GetFileName(directory);
+            Guid suffix;
+            if (name != id && (name.Length != 65 || name[32] != '-' || !Guid.TryParseExact(name.Substring(33), "N", out suffix))) continue;
+            if (!File.Exists(Path.Combine(directory, "snapshot.json"))) continue;
+            if (found != null) throw new IOException("Найдены несколько незавершённых установок. Нужна проверка резервных копий.");
+            found = directory;
+        }
+        return found;
+    }
+
+    private static bool DeleteCompletedSnapshot(string root, string path)
     {
         string prefix = Path.GetFullPath(root).TrimEnd('\\') + "\\";
         if (!Path.GetFullPath(path).StartsWith(prefix, StringComparison.OrdinalIgnoreCase)) throw new IOException("Недопустимый путь резервной копии.");
         AssertProtectedTree(path);
-        Directory.Delete(path, true);
+        // ACL/link validation is fatal. Only deletion of an already completed, validated snapshot is optional.
+        try { Directory.Delete(path, true); return true; }
+        catch (IOException) { return false; }
+        catch (UnauthorizedAccessException) { return false; }
     }
 
     [DataContract]
@@ -167,21 +190,50 @@ internal static class Program
             Guid snapshotId;
             if (!Guid.TryParseExact(File.ReadAllText(pending), "N", out snapshotId)) throw new IOException("Некорректная резервная копия прежней установки.");
             string backup = Path.Combine(backupRoot, snapshotId.ToString("N"));
-            AssertProtectedTree(backup);
-            CopyTree(backup, installRoot, true);
+            RestoreLegacyTree(installRoot, backup);
             File.Delete(pending);
             return;
         }
-        string executable = Path.Combine(installRoot, "PursovStudio.exe");
-        if (!File.Exists(executable)) return;
-        var installedVersion = FileVersionInfo.GetVersionInfo(executable);
-        if (installedVersion.FileMajorPart != 1 || installedVersion.FileMinorPart != 0 || installedVersion.FileBuildPart > 1) return;
+        if (!IsLegacyInstallation(installRoot)) return;
         AssertProtectedTree(installRoot);
         SecureDirectory(shared);
         SecureDirectory(backupRoot);
         string newSnapshot = Guid.NewGuid().ToString("N");
-        CopyTree(installRoot, Path.Combine(backupRoot, newSnapshot), false);
         File.WriteAllText(pending, newSnapshot);
+        QuarantineLegacyTree(installRoot, Path.Combine(backupRoot, newSnapshot));
+    }
+
+    private static bool IsLegacyInstallation(string path)
+    {
+        string executable = Path.Combine(path, "PursovStudio.exe");
+        if (!File.Exists(executable)) return false;
+        var version = FileVersionInfo.GetVersionInfo(executable);
+        return version.FileMajorPart == 1 && version.FileMinorPart == 0 && version.FileBuildPart <= 1;
+    }
+
+    private static void QuarantineLegacyTree(string source, string backup)
+    {
+        AssertProtectedTree(source);
+        AssertProtectedDirectory(Path.GetDirectoryName(backup));
+        if (Directory.Exists(backup) || File.Exists(backup)) throw new IOException("Резервная копия уже существует.");
+        // Directory.Move is atomic on one volume and fails without removing the source across volumes.
+        Directory.Move(source, backup);
+        SecureDirectory(source);
+    }
+
+    private static void RestoreLegacyTree(string installRoot, string backup)
+    {
+        if (Directory.Exists(backup))
+        {
+            AssertProtectedTree(backup);
+            CopyTree(backup, installRoot, true);
+        }
+        else
+        {
+            // The pending marker precedes the atomic move. A failed move must leave the original intact.
+            AssertProtectedTree(installRoot);
+            if (!IsLegacyInstallation(installRoot)) throw new IOException("Не найдена исходная установка для восстановления.");
+        }
     }
 
     private static void SecureDirectory(string path)

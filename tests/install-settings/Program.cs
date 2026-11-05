@@ -51,6 +51,22 @@ try
     Assert(File.ReadAllText(Path.Combine(next, "utils/game_filter.enabled")) == "mode=tcp\ntcp=443", "enabled filter preserved");
     Console.WriteLine("PASS new-version install preserves active version settings");
 
+    string retiredFixture = Path.Combine(root, ".previous-lock-fixture");
+    Directory.CreateDirectory(Path.Combine(retiredFixture, "bin"));
+    string retiredDriver = Path.Combine(retiredFixture, "bin/WinDivert64.sys");
+    File.WriteAllText(retiredDriver, "retired driver fixture");
+    MethodInfo cleanup = typeof(InstallService).GetMethod("CleanupRetiredPayload", BindingFlags.Static | BindingFlags.NonPublic)!;
+    using (var locked = new FileStream(retiredDriver, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+    {
+        cleanup.Invoke(null, new object[] { retiredFixture });
+        Assert(File.Exists(retiredDriver), "locked retired driver retained");
+        try { Directory.Delete(retiredFixture, true); throw new Exception("fixture did not hold a real delete lock"); }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException) { }
+    }
+    cleanup.Invoke(null, new object[] { retiredFixture });
+    Assert(!Directory.Exists(retiredFixture), "retired payload cleaned after handle release");
+    Console.WriteLine("PASS real locked retired file is retained and cleanup succeeds after release");
+
     File.Delete(Path.Combine(bundled, "bin/resource.bin"));
     try { install.Invoke(null, new object?[] { bundled, installed, installed }); throw new Exception("unsupported resource accepted"); }
     catch (TargetInvocationException ex) when (ex.InnerException is InvalidDataException) { }

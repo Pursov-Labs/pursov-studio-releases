@@ -71,11 +71,7 @@ public static class InstallService
                 if (Directory.Exists(previous)) Directory.Move(previous, destination);
                 throw;
             }
-            if (Directory.Exists(previous))
-            {
-                ElevatedWorker.AssertProtectedTree(previous);
-                Directory.Delete(previous, true);
-            }
+            CleanupRetiredPayload(previous);
         }
         finally
         {
@@ -84,6 +80,18 @@ public static class InstallService
                 ElevatedWorker.AssertProtectedTree(staged);
                 Directory.Delete(staged, true);
             }
+        }
+    }
+
+    internal static void CleanupRetiredPayload(string previous)
+    {
+        if (!Directory.Exists(previous)) return;
+        ElevatedWorker.AssertProtectedTree(previous);
+        try { Directory.Delete(previous, true); }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException
+            && (ex.HResult & 0xffff) is 5 or 32 or 33 or 145)
+        {
+            // shortcut: retain locked retired files; clean them during maintenance after the driver unloads.
         }
     }
 

@@ -11,7 +11,7 @@ on:
       candidate_tag:
         description: Published candidate prerelease tag
         required: true
-        default: v2.0.0-preview.2
+        default: v2.0.0-preview.3
         type: string
 
 permissions:

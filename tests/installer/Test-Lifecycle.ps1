@@ -240,6 +240,10 @@ try {
 
         Invoke-Msi '03-upgrade-candidate' @('/i',$candidate.Package)
         Assert-Installation $candidate.Version
+        $fixtureLog = Join-Path $OutputDirectory 'migration-worker.log'
+        & (Join-Path $env:SystemRoot 'System32/WindowsPowerShell/v1.0/powershell.exe') -NoProfile -File (Join-Path $PSScriptRoot 'Test-MigrationWorker.ps1') -Worker (Join-Path $installRoot 'UpdateWorker.exe') 2>&1 | Tee-Object -FilePath $fixtureLog
+        $report.workerRegression = @{ exitCode = $LASTEXITCODE; log = 'migration-worker.log' }
+        Check ($LASTEXITCODE -eq 0) 'Installed migration helper passes locked-file and legacy rollback regressions'
         Check (-not (Test-Path -LiteralPath ('HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\' + $previous.ProductCode))) 'Successful major upgrade removes old product registration'
         Check ((Hash $settings) -eq $settingsHash -and (Hash $secret) -eq $secretHash) 'Successful upgrade preserves per-user settings and synthetic Telegram secret'
         $active = Get-Content -LiteralPath $pointer -Raw | ConvertFrom-Json
