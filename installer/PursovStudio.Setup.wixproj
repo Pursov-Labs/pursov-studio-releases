@@ -1,0 +1,17 @@
+<Project Sdk="WixToolset.Sdk/7.0.1">
+  <PropertyGroup>
+    <AcceptEula>wix7</AcceptEula>
+    <Platform>x64</Platform>
+    <ProductVersion Condition="'$(ProductVersion)' == ''">2.0.0</ProductVersion>
+    <OutputName>PURSOV_STUDIO_$(ProductVersion)_x64</OutputName>
+    <DefineConstants>StageRoot=$(StageRoot);ProductVersion=$(ProductVersion)</DefineConstants>
+    <Cultures>ru-RU</Cultures>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Package.wxs" />
+    <Compile Include="$(StageRoot)/Payload.wxs" />
+    <PackageReference Include="WixToolset.UI.wixext" Version="7.0.1" />
+    <PackageReference Include="WixToolset.Util.wixext" Version="7.0.1" />
+  </ItemGroup>
+</Project>

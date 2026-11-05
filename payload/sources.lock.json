@@ -1,0 +1,48 @@
+{
+  "sources": [
+    {
+      "name": "Flowseal Zapret 1.10.4",
+      "reference": "176f56dc3f11ce5915c26abcdde903f93d835b64",
+      "file": "flowseal-zapret-176f56dc.zip",
+      "url": "https://codeload.github.com/Flowseal/zapret-discord-youtube/zip/176f56dc3f11ce5915c26abcdde903f93d835b64",
+      "sha256": "84b80721afb76635c0768bfacb146227d303c6b242684680bf9ca34849467a21",
+      "licenses": [{ "entry": "zapret-discord-youtube-176f56dc3f11ce5915c26abcdde903f93d835b64/LICENSE.txt", "output": "Zapret-Flowseal-LICENSE.txt" }]
+    },
+    {
+      "name": "Flowseal TG WS Proxy 1.11.4",
+      "reference": "2085861957070eeea07990a522b29f42e5230210",
+      "file": "tg-ws-proxy-20858619.zip",
+      "url": "https://codeload.github.com/Flowseal/tg-ws-proxy/zip/2085861957070eeea07990a522b29f42e5230210",
+      "sha256": "f567c0d097698a909f54816506962b62969531b53baddb0eed4d9cd7db001598",
+      "licenses": [{ "entry": "tg-ws-proxy-2085861957070eeea07990a522b29f42e5230210/LICENSE", "output": "TG-WS-Proxy-LICENSE.txt" }]
+    },
+    {
+      "name": "zapret winws v72.9",
+      "reference": "c849e55ef0f1c244206f5a05ff7b1ab41a3824ee",
+      "file": "zapret-v72.9-c849e55e.zip",
+      "url": "https://codeload.github.com/bol-van/zapret/zip/c849e55ef0f1c244206f5a05ff7b1ab41a3824ee",
+      "sha256": "42daecb2bce66ebc4bda14407ac71b1f58281baaf38ab91936709552df1ece15",
+      "licenses": [{ "entry": "zapret-c849e55ef0f1c244206f5a05ff7b1ab41a3824ee/docs/LICENSE.txt", "output": "Zapret-LICENSE.txt" }]
+    },
+    {
+      "name": "WinDivert v2.2.2 source",
+      "reference": "1789526ecfb9ff5397c94f9f54c1a3dc2fb60440",
+      "file": "windivert-v2.2.2-1789526e.zip",
+      "url": "https://codeload.github.com/basil00/WinDivert/zip/1789526ecfb9ff5397c94f9f54c1a3dc2fb60440",
+      "sha256": "25054821d47ec0ef2227c79f3d6688a3a11d6a128d8f103710d1022e92ea1054",
+      "licenses": [{ "entry": "WinDivert-1789526ecfb9ff5397c94f9f54c1a3dc2fb60440/LICENSE", "output": "WinDivert-LICENSE.txt" }]
+    },
+    {
+      "name": "Cygwin 3.4.10 source",
+      "reference": "89a1e4a573d40b233011402f42630b970ff71291",
+      "file": "cygwin-3.4.10-89a1e4a5.zip",
+      "url": "https://codeload.github.com/cygwin/cygwin/zip/89a1e4a573d40b233011402f42630b970ff71291",
+      "sha256": "6543985a93ec3dc6586e61aa4da395b80a0324ca209b368172023335975248dd",
+      "licenses": [
+        { "entry": "cygwin-89a1e4a573d40b233011402f42630b970ff71291/winsup/COPYING", "output": "Cygwin-COPYING.txt" },
+        { "entry": "cygwin-89a1e4a573d40b233011402f42630b970ff71291/winsup/COPYING.LIB", "output": "Cygwin-LGPL.txt" },
+        { "entry": "cygwin-89a1e4a573d40b233011402f42630b970ff71291/winsup/CYGWIN_LICENSE", "output": "Cygwin-LICENSE.txt" }
+      ]
+    }
+  ]
+}

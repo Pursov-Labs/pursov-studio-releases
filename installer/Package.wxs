@@ -1,0 +1,55 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs" xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
+  <Package Name="PURSOV STUDIO" Manufacturer="Pursov Labs" Version="$(var.ProductVersion)" Language="1049"
+           UpgradeCode="35A9E7FC-3892-44D7-9872-C879794C01AF" Scope="perMachine" Compressed="yes">
+    <MajorUpgrade Schedule="afterInstallInitialize" DowngradeErrorMessage="На компьютере уже установлена более новая версия PURSOV STUDIO." />
+    <MediaTemplate EmbedCab="yes" CompressionLevel="high" />
+    <Launch Condition="Installed OR (Msix64 AND WindowsBuild &gt;= 19045)"
+            Message="Нужна 64-разрядная Windows 10 22H2 или Windows 11 на процессоре Intel или AMD." />
+    <Property Id="ARPPRODUCTICON" Value="PursovStudio.exe" />
+    <Property Id="ARPURLINFOABOUT" Value="https://github.com/Pursov-Labs/pursov-studio-releases" />
+    <Property Id="ARPNOREPAIR" Value="1" />
+    <Property Id="MSIRESTARTMANAGERCONTROL" Value="Disable" />
+    <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="Открыть PURSOV STUDIO" />
+    <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOX" Value="1" />
+    <Property Id="WixUnelevatedShellExecTarget" Value="[#PursovStudioExe]" />
+    <Icon Id="PursovStudio.exe" SourceFile="$(var.StageRoot)/PursovStudio.exe" />
+    <Binary Id="MigrationWorker" SourceFile="$(var.StageRoot)/UpdateWorker.exe" />
+    <WixVariable Id="WixUILicenseRtf" Value="License.rtf" />
+    <ui:WixUI Id="WixUI_Minimal" />
+    <UI>
+      <Publish Dialog="ExitDialog" Control="Finish" Event="DoAction" Value="LaunchApplication" Order="1" Condition="WIXUI_EXITDIALOGOPTIONALCHECKBOX = 1 AND NOT Installed" />
+    </UI>
+    <CustomAction Id="LaunchApplication" BinaryRef="Wix4UtilCA_X64" DllEntry="WixUnelevatedShellExec" Execute="immediate" Impersonate="yes" Return="ignore" />
+    <Feature Id="Complete" Title="PURSOV STUDIO" Level="1">
+      <ComponentRef Id="Application" />
+      <ComponentGroupRef Id="Payload" />
+    </Feature>
+    <StandardDirectory Id="ProgramFiles64Folder">
+      <Directory Id="INSTALLFOLDER" Name="PURSOV STUDIO">
+        <Component Id="Application" Guid="C1B0CDA2-8E7D-4201-AD3D-9766698B8AD4" Bitness="always64">
+          <File Id="PursovStudioExe" Source="$(var.StageRoot)/PursovStudio.exe" KeyPath="yes">
+            <Shortcut Id="StartMenuShortcut" Directory="ProgramMenuFolder" Name="PURSOV STUDIO" Advertise="yes" Icon="PursovStudio.exe" WorkingDirectory="INSTALLFOLDER" />
+            <Shortcut Id="DesktopShortcut" Directory="DesktopFolder" Name="PURSOV STUDIO" Advertise="yes" Icon="PursovStudio.exe" WorkingDirectory="INSTALLFOLDER" />
+            <Shortcut Id="StartupShortcut" Directory="StartupFolder" Name="PURSOV STUDIO" Arguments="--signin" Advertise="yes" Icon="PursovStudio.exe" WorkingDirectory="INSTALLFOLDER" />
+          </File>
+          <ServiceInstall Id="BrokerInstall" Name="PursovStudioBroker" DisplayName="PURSOV STUDIO" Description="Подключение PURSOV STUDIO и установка проверенных обновлений."
+                          Type="ownProcess" Start="demand" ErrorControl="normal" Account="LocalSystem" Arguments="--service" />
+          <ServiceControl Id="BrokerControl" Name="PursovStudioBroker" Stop="both" Remove="uninstall" Wait="yes" />
+        </Component>
+      </Directory>
+    </StandardDirectory>
+    <StandardDirectory Id="ProgramMenuFolder" />
+    <StandardDirectory Id="DesktopFolder" />
+    <StandardDirectory Id="StartupFolder" />
+    <CustomAction Id="RollbackLegacy" BinaryRef="MigrationWorker" ExeCommand="--restore-install [ProductCode]" Execute="rollback" Impersonate="no" Return="check" />
+    <CustomAction Id="BackupLegacy" BinaryRef="MigrationWorker" ExeCommand="--backup-install [ProductCode]" Execute="deferred" Impersonate="no" Return="check" />
+    <CustomAction Id="InitializeInstall" FileRef="PursovStudioExe" ExeCommand="--initialize-install" Execute="deferred" Impersonate="no" Return="check" />
+    <CustomAction Id="CommitLegacy" BinaryRef="MigrationWorker" ExeCommand="--commit-install [ProductCode]" Execute="commit" Impersonate="no" Return="check" />
+    <InstallExecuteSequence>
+      <Custom Action="RollbackLegacy" Before="BackupLegacy" Condition="NOT REMOVE~=&quot;ALL&quot;" />
+      <Custom Action="BackupLegacy" Before="CreateFolders" Condition="NOT REMOVE~=&quot;ALL&quot;" />
+      <Custom Action="InitializeInstall" After="InstallServices" Condition="NOT REMOVE~=&quot;ALL&quot;" />
+      <Custom Action="CommitLegacy" After="InitializeInstall" Condition="NOT REMOVE~=&quot;ALL&quot;" />
+    </InstallExecuteSequence>
+  </Package>
+</Wix>

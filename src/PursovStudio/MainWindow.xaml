@@ -1,0 +1,116 @@
+<Window x:Class="PursovStudio.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="PURSOV STUDIO" Width="620" Height="650" MinWidth="360" MinHeight="320"
+        Icon="/PursovStudio;component/Assets/App.ico" Style="{StaticResource {x:Type Window}}"
+        WindowStartupLocation="CenterScreen" Language="ru-RU"
+        Loaded="Window_Loaded" Closing="Window_Closing" IsVisibleChanged="Window_IsVisibleChanged">
+    <ScrollViewer x:Name="ShellScroll" Background="{DynamicResource Ground}" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Margin="28,22,28,18" MaxWidth="780">
+            <DockPanel LastChildFill="True" Margin="0,0,0,28">
+                <Image Source="{StaticResource BrandMark}" Width="26" Height="26" Margin="0,0,10,0" AutomationProperties.Name="Значок PURSOV STUDIO" />
+                <TextBlock Text="PURSOV STUDIO" FontSize="16" FontWeight="SemiBold" VerticalAlignment="Center" />
+            </DockPanel>
+            <StackPanel x:Name="StatusPanel">
+                <TextBlock x:Name="StatusText" Text="Подготовка" FontSize="28" FontWeight="SemiBold" TextWrapping="Wrap" AutomationProperties.LiveSetting="Polite" />
+                <TextBlock x:Name="DetailText" Text="Загружаем настройки." Style="{StaticResource BodyText}" Margin="0,8,0,0" />
+                <TextBlock x:Name="ProgressText" Style="{StaticResource BodyText}" Margin="0,8,0,0" Visibility="Collapsed" />
+            </StackPanel>
+            <Button x:Name="MainButton" Content="Подключить" Style="{StaticResource PrimaryButton}" MinWidth="220"
+                    HorizontalAlignment="Left" Margin="0,24,0,24" Click="MainButton_Click" />
+            <Border x:Name="ConflictPanel" BorderBrush="{DynamicResource Line}" BorderThickness="1" CornerRadius="6" Padding="14" Margin="0,0,0,16" Visibility="Collapsed">
+                <ItemsControl x:Name="ConflictItems"><ItemsControl.ItemTemplate><DataTemplate>
+                    <StackPanel Margin="0,2">
+                        <TextBlock Text="{Binding Name}" FontWeight="SemiBold" Foreground="{DynamicResource Warning}" TextWrapping="Wrap" />
+                        <TextBlock Text="{Binding Detail}" Style="{StaticResource BodyText}" Margin="0,4,0,0" />
+                    </StackPanel>
+                </DataTemplate></ItemsControl.ItemTemplate></ItemsControl>
+            </Border>
+            <Button x:Name="RecoveryButton" Content="Восстановить настройки" Click="RecoveryButton_Click" HorizontalAlignment="Left" Style="{StaticResource ActionButton}" Margin="0,0,0,16" Visibility="Collapsed" />
+            <Button x:Name="InstallButton" Content="Установить приложение" Click="InstallButton_Click" HorizontalAlignment="Left" Style="{StaticResource ActionButton}" Margin="0,0,0,16" Visibility="Collapsed" />
+            <ItemsControl x:Name="SummaryItems"><ItemsControl.ItemTemplate><DataTemplate>
+                <Border BorderBrush="{DynamicResource Line}" BorderThickness="0,0,0,1" Padding="0,14">
+                    <Grid>
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="24" /><ColumnDefinition Width="*" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>
+                        <Path Data="{Binding Glyph}" Stroke="{Binding Brush}" StrokeThickness="1.7" StrokeStartLineCap="Round" StrokeEndLineCap="Round" Width="14" Height="14" Stretch="Uniform" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                        <TextBlock Grid.Column="1" Text="{Binding Name}" FontWeight="SemiBold" VerticalAlignment="Center" Margin="0,0,12,0" />
+                        <TextBlock Grid.Column="2" Text="{Binding Text}" Foreground="{Binding Brush}" TextWrapping="Wrap" TextAlignment="Right" VerticalAlignment="Center" />
+                    </Grid>
+                </Border>
+            </DataTemplate></ItemsControl.ItemTemplate></ItemsControl>
+            <TextBlock x:Name="CheckedText" Style="{StaticResource BodyText}" FontSize="12" Margin="0,10,0,0" Text="Проверка ещё не запускалась" />
+            <Grid Margin="0,12,0,0">
+                <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                <WrapPanel>
+                    <Button x:Name="MainTelegramButton" Content="Настроить Telegram" Style="{StaticResource LinkButton}" Padding="0,9" Margin="0,0,20,0" Click="TelegramButton_Click" />
+                    <Button x:Name="DetailsButton" Content="Подробнее" Style="{StaticResource LinkButton}" Padding="0,9" HorizontalAlignment="Left" Click="DetailsButton_Click" />
+                </WrapPanel>
+                <Button x:Name="UpdateNotice" Grid.Column="1" Content="Обновление готово" Style="{StaticResource LinkButton}" Click="UpdateNotice_Click" Visibility="Collapsed" />
+            </Grid>
+            <Border x:Name="DetailsPanel" Background="{DynamicResource Surface}" BorderBrush="{DynamicResource Line}" BorderThickness="1" CornerRadius="8" Padding="18" Margin="0,8,0,16" Visibility="Collapsed">
+                <StackPanel>
+                    <DockPanel Margin="0,0,0,20">
+                        <Button Content="Назад" DockPanel.Dock="Right" Style="{StaticResource LinkButton}" Margin="8,0,0,0" Click="BackButton_Click" />
+                    <ComboBox x:Name="SectionPicker" SelectedIndex="0" SelectionChanged="SectionPicker_SelectionChanged" AutomationProperties.Name="Раздел подробностей" HorizontalContentAlignment="Stretch">
+                        <ComboBoxItem Content="Диагностика" /><ComboBoxItem Content="Способы подключения" /><ComboBoxItem Content="Журнал" /><ComboBoxItem Content="Обновления" /><ComboBoxItem Content="Настройки и о программе" />
+                    </ComboBox>
+                    </DockPanel>
+                    <StackPanel x:Name="DiagnosticsSection">
+                        <WrapPanel Margin="0,0,0,12">
+                            <Button x:Name="CheckButton" Content="Проверить связь" Click="CheckButton_Click" Style="{StaticResource ActionButton}" Margin="0,0,8,8" />
+                            <Button x:Name="TelegramButton" Content="Настроить Telegram" Click="TelegramButton_Click" Style="{StaticResource ActionButton}" Margin="0,0,0,8" />
+                        </WrapPanel>
+                        <ItemsControl x:Name="ServiceItems"><ItemsControl.ItemTemplate><DataTemplate>
+                            <StackPanel Margin="0,0,0,18">
+                                <TextBlock Text="{Binding Service}" FontWeight="SemiBold" TextWrapping="Wrap" />
+                                <TextBlock Text="{Binding Status}" Foreground="{Binding Brush}" TextWrapping="Wrap" Margin="0,4,0,0" />
+                                <TextBlock Text="{Binding Detail}" Style="{StaticResource OptionalBodyText}" FontSize="12" Margin="0,4,0,0" />
+                                <TextBlock Text="{Binding Duration}" Style="{StaticResource OptionalBodyText}" FontSize="12" />
+                            </StackPanel>
+                        </DataTemplate></ItemsControl.ItemTemplate></ItemsControl>
+                        <TextBlock Text="Звонки и длительное воспроизведение проверяются в самих приложениях." Style="{StaticResource BodyText}" FontSize="12" />
+                    </StackPanel>
+                    <StackPanel x:Name="StrategiesSection" Visibility="Collapsed">
+                        <Button x:Name="FindStrategyButton" Content="Подобрать заново" Click="FindStrategyButton_Click" Style="{StaticResource ActionButton}" HorizontalAlignment="Left" Margin="0,0,0,14" />
+                        <DataGrid x:Name="StrategiesGrid" IsReadOnly="True" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" HeadersVisibility="Column" GridLinesVisibility="Horizontal" MaxHeight="280" MinHeight="100" EnableRowVirtualization="True" AutomationProperties.Name="Результаты подбора способов подключения">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Способ" Binding="{Binding Name}" Width="*" MinWidth="110" />
+                                <DataGridTextColumn Header="Проверки" Binding="{Binding Coverage}" Width="82" />
+                                <DataGridTextColumn Header="Задержка" Binding="{Binding Latency}" Width="90" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <TextBlock x:Name="StrategiesEmpty" Text="Подбор ещё не выполнялся." Style="{StaticResource BodyText}" Margin="0,12,0,0" />
+                    </StackPanel>
+                    <Grid x:Name="LogSection" Visibility="Collapsed">
+                        <TextBox x:Name="LogText" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap" FontFamily="Consolas" FontSize="12" Height="280" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" AutomationProperties.Name="Журнал текущего сеанса" />
+                        <TextBlock x:Name="LogEmpty" Text="Здесь появятся события текущего сеанса." Style="{StaticResource BodyText}" Margin="12" IsHitTestVisible="False" />
+                    </Grid>
+                    <StackPanel x:Name="UpdatesSection" Visibility="Collapsed">
+                        <TextBlock x:Name="VersionText" Style="{StaticResource SectionTitle}" />
+                        <TextBlock x:Name="UpdateText" Style="{StaticResource BodyText}" Text="Проверяем обновления." AutomationProperties.LiveSetting="Polite" />
+                        <WrapPanel Margin="0,16,0,8">
+                            <Button x:Name="UpdateCheckButton" Content="Проверить обновления" Click="UpdateCheckButton_Click" Style="{StaticResource ActionButton}" Margin="0,0,8,8" />
+                            <Button x:Name="UpdateApplyButton" Content="Установить" Click="UpdateApplyButton_Click" Style="{StaticResource ActionButton}" Margin="0,0,0,8" />
+                        </WrapPanel>
+                        <TextBlock Text="Новые версии скачиваются автоматически. Установка начнётся после нажатия «Установить». Подключение на время прервётся." Style="{StaticResource BodyText}" FontSize="12" />
+                    </StackPanel>
+                    <StackPanel x:Name="SettingsSection" Visibility="Collapsed">
+                        <CheckBox x:Name="AutoStartBox" Content="Запускать с Windows" Margin="0,0,0,14" Click="Preferences_Click" />
+                        <CheckBox x:Name="AutoConnectBox" Content="Подключаться при запуске" Margin="0,0,0,24" Click="Preferences_Click" />
+                        <TextBlock Text="О программе" Style="{StaticResource SectionTitle}" />
+                        <TextBlock Text="PURSOV STUDIO объединяет открытые проекты Flowseal в одном приложении для Windows." Style="{StaticResource BodyText}" />
+                        <TextBlock Margin="0,14,0,0" TextWrapping="Wrap"><Hyperlink NavigateUri="https://github.com/Flowseal/zapret-discord-youtube" RequestNavigate="SourceLink_RequestNavigate">Zapret · Flowseal на GitHub</Hyperlink></TextBlock>
+                        <TextBlock Margin="0,10,0,0" TextWrapping="Wrap"><Hyperlink NavigateUri="https://github.com/Flowseal/tg-ws-proxy" RequestNavigate="SourceLink_RequestNavigate">TG WS Proxy · Flowseal на GitHub</Hyperlink></TextBlock>
+                        <TextBlock Margin="0,10,0,0" TextWrapping="Wrap"><Hyperlink NavigateUri="https://github.com/Pursov-Labs/pursov-studio-releases" RequestNavigate="SourceLink_RequestNavigate">Выпуски и исходный код PURSOV STUDIO</Hyperlink></TextBlock>
+                        <Button Content="Лицензии компонентов" Style="{StaticResource LinkButton}" HorizontalAlignment="Left" Margin="0,8,0,0" Click="LicensesButton_Click" />
+                        <TextBlock Text="Авторство и лицензии компонентов сохранены. Версии компонентов указаны в документах установленного выпуска." Style="{StaticResource BodyText}" FontSize="12" Margin="0,8,0,0" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+            <DockPanel Margin="0,14,0,0">
+                <TextBlock x:Name="FooterVersion" DockPanel.Dock="Right" Style="{StaticResource BodyText}" FontSize="12" Margin="12,0,0,0" />
+                <TextBlock Text="Можно закрыть окно — приложение останется в трее." Style="{StaticResource BodyText}" FontSize="12" />
+            </DockPanel>
+        </StackPanel>
+    </ScrollViewer>
+</Window>

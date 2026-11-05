@@ -1,0 +1,14 @@
+.tools/
+backups/
+output/
+**/bin/
+**/obj/
+**/__pycache__/
+runtime/python/
+payload/tg/
+*.user
+ZAPRET/
+TgWsProxy_windows_7_64bit(2).exe
+PURSOV_STUDIO_ПЛАН_РАЗРАБОТКИ.md
+tests/*.json
+installer/GeneratedPayload.wxs

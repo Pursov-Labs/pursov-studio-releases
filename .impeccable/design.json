@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-05T20:29:39.9433585+03:00",
+  "title": "PURSOV STUDIO",
+  "extensions": {
+    "motion": [
+      {
+        "name": "state-change",
+        "value": "170ms cubic ease-out opacity 0.65 to 1",
+        "purpose": "Only a visible status transition, disabled by Windows animation preference or high contrast."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "minimum-window",
+        "value": "360 DIP"
+      },
+      {
+        "name": "default-window",
+        "value": "620 DIP"
+      }
+    ]
+  }
+}

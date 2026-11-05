@@ -1,0 +1,20 @@
+{
+  "python": { "version": "3.12.10", "url": "https://www.python.org/ftp/python/3.12.10/python-3.12.10-embed-amd64.zip", "sha256": "4acbed6dd1c744b0376e3b1cf57ce906f9dc9e95e68824584c8099a63025a3c3" },
+  "source": { "version": "1.11.4", "commit": "2085861957070eeea07990a522b29f42e5230210", "url": "https://codeload.github.com/Flowseal/tg-ws-proxy/zip/2085861957070eeea07990a522b29f42e5230210", "sha256": "f567c0d097698a909f54816506962b62969531b53baddb0eed4d9cd7db001598" },
+  "wheels": [
+    { "name": "cryptography", "version": "46.0.5", "file": "cryptography-46.0.5-cp311-abi3-win_amd64.whl", "sha256": "38946c54b16c885c72c4f59846be9743d699eee2b69b6988e0a00a01f46a61a4" },
+    { "name": "cffi", "version": "2.0.0", "file": "cffi-2.0.0-cp312-cp312-win_amd64.whl", "sha256": "da68248800ad6320861f129cd9c1bf96ca849a2771a59e0344e88681905916f5" },
+    { "name": "pycparser", "version": "2.23", "file": "pycparser-2.23-py3-none-any.whl", "sha256": "e5c6e8d3fbad53479cab09ac03729e0a9faf2bee3db8208a550daf5af81a5934" },
+    { "name": "httpx", "version": "0.28.1", "file": "httpx-0.28.1-py3-none-any.whl", "sha256": "d909fcccc110f8c7faf814ca82a9a4d816bc5a6dbfea25d6591d6985b8ba59ad" },
+    { "name": "httpcore", "version": "1.0.9", "file": "httpcore-1.0.9-py3-none-any.whl", "sha256": "2d400746a40668fc9dec9810239072b40b4484b640a8c38fd654a024c7a1bf55" },
+    { "name": "h11", "version": "0.16.0", "file": "h11-0.16.0-py3-none-any.whl", "sha256": "63cf8bbe7522de3bf65932fda1d9c2772064ffb3dae62d55932da54b31cb6c86" },
+    { "name": "h2", "version": "4.3.0", "file": "h2-4.3.0-py3-none-any.whl", "sha256": "c438f029a25f7945c69e0ccf0fb951dc3f73a5f6412981daee861431b70e2bdd" },
+    { "name": "hpack", "version": "4.1.0", "file": "hpack-4.1.0-py3-none-any.whl", "sha256": "157ac792668d995c657d93111f46b4535ed114f0c9c8d672271bbec7eae1b496" },
+    { "name": "hyperframe", "version": "6.1.0", "file": "hyperframe-6.1.0-py3-none-any.whl", "sha256": "b03380493a519fce58ea5af42e4a42317bf9bd425596f7a0835ffce80f1a42e5" },
+    { "name": "anyio", "version": "4.11.0", "file": "anyio-4.11.0-py3-none-any.whl", "sha256": "0287e96f4d26d4149305414d4e3bc32f0dcd0862365a4bddea19d7a1ec38c4fc" },
+    { "name": "idna", "version": "3.11", "file": "idna-3.11-py3-none-any.whl", "sha256": "771a87f49d9defaf64091e6e6fe9c18d4833f140bd19464795bc32d966ca37ea" },
+    { "name": "sniffio", "version": "1.3.1", "file": "sniffio-1.3.1-py3-none-any.whl", "sha256": "2f6da418d1f1e0fddd844478f41680e794e6051915791a034ff65e5f100525a2" },
+    { "name": "typing_extensions", "version": "4.15.0", "file": "typing_extensions-4.15.0-py3-none-any.whl", "sha256": "f0fa19c6845758ab08074a0cfa8b7aecb71c999ca73d62883bc25cc018c4e548" },
+    { "name": "certifi", "version": "2026.10.23", "file": "certifi-2026.10.23-py3-none-any.whl", "sha256": "e9b54de76e530bb6cf0ccd036787103acb58fd42ba930ea8bf948ddbaa2f61d1" }
+  ]
+}
