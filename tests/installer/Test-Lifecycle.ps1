@@ -169,6 +169,11 @@ function Tree-Digest([string]$Directory) {
     })
     $rows | ConvertTo-Json -Compress -Depth 3
 }
+function Service-Sddl {
+    $descriptor = @(& (Join-Path $env:SystemRoot 'System32/sc.exe') sdshow $serviceName)
+    if ($LASTEXITCODE -ne 0) { throw 'Could not read broker service security.' }
+    ($descriptor | Where-Object { $_.Trim().StartsWith('D:') }) -join ''
+}
 
 try {
     $previous = Verify-Release $PreviousDirectory
@@ -216,6 +221,8 @@ try {
         $pointerHash = Hash $pointer
         $installedBefore = Tree-Digest $installRoot
         $sharedBefore = Tree-Digest (Join-Path $sharedRoot 'zapret')
+        $serviceSecurityBefore = Service-Sddl
+        Check (-not [string]::IsNullOrWhiteSpace($serviceSecurityBefore)) 'Baseline broker security descriptor is readable'
 
         Invoke-Msi '02-forced-rollback' @('/i',$testPackage) 1603
         $rollbackLog = Get-Content -LiteralPath (Join-Path $OutputDirectory '02-forced-rollback.log') -Raw
@@ -224,6 +231,7 @@ try {
         $rollbackIndex = $rollbackLog.LastIndexOf('CustomActionSchedule(Action=RollbackLegacy,')
         Check ($initializeIndex -ge 0 -and $failureIndex -gt $initializeIndex -and $rollbackIndex -gt $failureIndex) 'Failure occurs after initializer and executes rollback helper'
         Assert-Installation $previous.Version
+        Check ((Service-Sddl) -ceq $serviceSecurityBefore) 'Rollback restores broker service access rights'
         Check ((Tree-Digest $installRoot) -ceq $installedBefore) 'Rollback restores every original installed file byte-for-byte'
         Check ((Tree-Digest (Join-Path $sharedRoot 'zapret')) -ceq $sharedBefore -and (Hash $pointer) -eq $pointerHash) 'Rollback restores shared payload and active pointer byte-for-byte'
         Check ((Hash $settings) -eq $settingsHash -and (Hash $secret) -eq $secretHash) 'Rollback preserves per-user settings and synthetic Telegram secret'
