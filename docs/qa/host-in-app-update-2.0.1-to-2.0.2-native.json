@@ -1,0 +1,73 @@
+{
+  "fromVersion": "2.0.1.0",
+  "targetVersion": "2.0.2",
+  "environment": "Windows 11, ordinary Explorer-launched application",
+  "startedUtc": "2026-11-06T01:09:21.3485219Z",
+  "automaticDownloadObserved": true,
+  "trigger": "Install button in the connected ordinary-user application",
+  "successfulInAppUpdateConfirmed": true,
+  "result": {
+    "state": "complete",
+    "exitCode": 0,
+    "finishedAt": "2026-11-06T01:09:36.0876722Z",
+    "message": "Обновление установлено",
+    "msiServerExitCode": 0,
+    "msiClientExitCode": 0,
+    "msiLogReportsInstallationSuccess": true
+  },
+  "package": {
+    "version": "2.0.2",
+    "sha256": "bb4a7538a0fa83fc5dd5234545bfcc10573158be341d39d30c4227fdc876ff45",
+    "manifestSha256": "6057520571c66ef7c057d576f63c632349fff0a75ff6fb64ecf3c636d4d70735",
+    "signatureSha256": "fbf9d52a21f21bce86d21cf0d583208312799586c08ff4637021edc394028684",
+    "matchesPublishedRelease": true
+  },
+  "installedFiles": {
+    "version": "2.0.2.0",
+    "expectedFileCount": 989,
+    "actualFileCount": 989,
+    "missing": 0,
+    "changed": 0,
+    "extra": 0,
+    "allPayloadFilesMatchReleaseStage": true,
+    "excludedBuildArtifact": "Payload.wxs is generated installer source, explicitly excluded by scripts/package.ps1:14.",
+    "applicationExeSha256": "78e7e232d71388631db9506936058e6633faaee29ba075b24b1b408f7ec03ac1",
+    "checkedUtc": "2026-11-06T01:10:54.7622562Z"
+  },
+  "restart": {
+    "previousGuiExited": true,
+    "newGuiLaunchedByRestartWaiter": true,
+    "resumeRequested": true,
+    "tokenElevation": 0,
+    "tokenCheckedUtc": "2026-11-06T01:10:47.7410886Z",
+    "displayedVersion": "2.0.2",
+    "connectionRestored": true,
+    "displayedConnectionState": "Подключено",
+    "displayedChecks": {
+      "Telegram": "Прокси отвечает",
+      "Discord": "Соединение отвечает",
+      "YouTube": "Видеофрагмент получен"
+    },
+    "displayedCheckTimeEuropeMoscow": "2026-11-06 04:09"
+  },
+  "configurationHandoff": {
+    "manualSettingsCopyCompleted": false,
+    "usedExistingNativeUserProfile": true,
+    "note": "The separate elevated settings-copy attempt failed without replacing configuration. It was not a successful migration step."
+  },
+  "sourceEvidence": {
+    "localStartRecord": "output/qa-v2/native-in-app-update-2.0.2-start.json",
+    "localFileSummary": "output/qa-v2/native-in-app-update-2.0.2-files.json",
+    "localTokenSummary": "output/qa-v2/native-in-app-update-2.0.2-token.json",
+    "localMsiLog": "output/qa-v2/native-in-app-update-2.0.2-install.log",
+    "msiLogSha256": "10fe77ce2d20d79b5663eb3f2a513ca3226ab7870c93072f3f9291f450eda3c0",
+    "resultPath": "%ProgramData%/PURSOV STUDIO/app-updates/1589a303429f41a98bce32283e5027a2/result.json",
+    "resultSha256": "0c07fa8a54f77b8e4a92570132f34a324fac86c167362dcee603ffb65c5dd7d8",
+    "uiVerification": "Operator observed automatic download, clicked Install, then verified the new version, restart parent, connection state and technical probes. Result, MSI log, hashes, inventory and token were independently read without changing application state."
+  },
+  "limits": [
+    "This is one Windows 11 host; it does not establish clean Windows 10 installation, reboot or alternate-administrator behavior.",
+    "Displayed probes do not prove a real Telegram message, Discord voice call or sustained YouTube playback.",
+    "The completed window and tray performance measurements cover 2.0.1.0, not 2.0.2.0."
+  ]
+}

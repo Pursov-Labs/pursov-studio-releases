@@ -1,0 +1,47 @@
+{
+  "measuredVersion": "2.0.1.0",
+  "mode": "tray",
+  "state": "connected idle",
+  "visibilityVerification": "Operator closed the visible window using its Close control and confirmed no PURSOV STUDIO window remained while the application process stayed alive before measurement; the script did not change visibility.",
+  "startedUtc": "2026-11-06T00:43:02.5807482Z",
+  "finishedUtc": "2026-11-06T00:53:02.7787584Z",
+  "measuredSeconds": 600.0567192000001,
+  "requestedSeconds": 600,
+  "logicalProcessors": 16,
+  "intervalSeconds": 5,
+  "sampleCount": 120,
+  "cpuIntervalCount": 119,
+  "maximumSamplingGapSeconds": 5.0869821,
+  "samplingGapsOverTwiceInterval": 0,
+  "completed": true,
+  "valid": true,
+  "issues": [],
+  "averageCpuPercent": 0.01627450320532966,
+  "peakPrivateBytes": 193957888,
+  "peakPrivateMiB": 184.97265625,
+  "peakPrivateDecimalMB": 193.957888,
+  "cpuTargetPercent": 0.5,
+  "memoryTargetBytes": 250000000,
+  "cpuTargetPassed": true,
+  "memoryTargetPassed": true,
+  "allSamplesContainFourOwnedRoles": true,
+  "roles": [
+    { "role": "ui", "sampleCount": 120, "distinctProcessIdentities": 1 },
+    { "role": "broker", "sampleCount": 120, "distinctProcessIdentities": 1 },
+    { "role": "telegram", "sampleCount": 120, "distinctProcessIdentities": 1 },
+    { "role": "zapret", "sampleCount": 120, "distinctProcessIdentities": 1 }
+  ],
+  "limitations": [
+    "CPU is the sum of sampled owned process CPU time normalized across all 16 logical processors.",
+    "Private memory covers the four owned user-mode processes; kernel and driver memory are not measured.",
+    "Processes and memory peaks occurring entirely between five-second samples can be missed.",
+    "The connected idle state excludes deliberate user traffic and manual diagnostics; PowerShell and CIM measurement overhead is excluded from target CPU.",
+    "This measurement covers version 2.0.1.0 in tray mode. It is not a benchmark of 2.0.2."
+  ],
+  "sourceEvidence": {
+    "localReport": "output/qa-v2/performance-installed-2.0.1-tray.json",
+    "sha256": "9822e4e7b12f9a27115219206f40fb712fdfd9fba324b074bde8ca30345ca1c7",
+    "method": "tests/performance/Measure-Idle.ps1",
+    "publication": "Summary excludes process identifiers, executable paths and raw samples."
+  }
+}

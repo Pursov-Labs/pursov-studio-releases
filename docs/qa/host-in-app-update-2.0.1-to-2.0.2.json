@@ -1,0 +1,41 @@
+{
+  "fromVersion": "2.0.1.0",
+  "targetVersion": "2.0.2",
+  "attemptScope": "First attempt launched from the Codex/MSIX environment",
+  "laterNativeAttemptReport": "host-in-app-update-2.0.1-to-2.0.2-native.json",
+  "trigger": "Install button in the ordinary-user application",
+  "successfulInAppUpdateConfirmed": false,
+  "result": {
+    "state": "failed",
+    "exitCode": -1,
+    "finishedAt": "2026-11-06T03:54:25.2222822+03:00",
+    "message": "Проверка обновления не завершена. Установленная версия сохранена.",
+    "phase": "before MSI launch",
+    "msiInstallLogPresent": false
+  },
+  "installedFileVersionAfterFailure": "2.0.1.0",
+  "operatorObservations": {
+    "clientLog": "FileNotFound for release.json in the per-user staging directory; the ordinary-user shell could see the staged files.",
+    "connectionRestoredAutomatically": true,
+    "causeConfirmed": true,
+    "confirmedCause": "The application launched from Codex inherited MSIX filesystem redirection. Staged files physically resided in the Codex package LocalCache/Local tree while the SYSTEM broker addressed the real user LocalAppData directory.",
+    "causeScope": "Test launch environment; no production code change was made for this finding."
+  },
+  "releaseContainment": {
+    "tag": "v2.0.2",
+    "restoredToPrereleaseAfterFailure": true,
+    "reactivatedAfterEnvironmentCauseConfirmed": true,
+    "mainAutomaticUpdateChannelActive": true
+  },
+  "sourceEvidence": {
+    "resultPath": "%ProgramData%/PURSOV STUDIO/app-updates/1da545eb9a5547e29f9fe9729956aac1/result.json",
+    "resultSha256": "b2134e597e8c823991c32a7ef0faed0343694fb55018a8317f075a35d3b9db8c",
+    "verification": "Read-only result, installed executable version and absence of the transaction MSI log; UI recovery and client-log details were recorded by the operator.",
+    "causeVerification": "Broker investigation confirmed the physical staged files under the Codex MSIX package cache instead of the real user profile."
+  },
+  "limits": [
+    "This is a failed pre-install attempt, not a Windows Installer rollback.",
+    "This report retains the failed Codex/MSIX test-launch attempt after its environment cause was confirmed.",
+    "Successful application-driven installation and restart from an ordinary Windows launch are documented separately in host-in-app-update-2.0.1-to-2.0.2-native.json."
+  ]
+}

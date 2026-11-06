@@ -1,0 +1,47 @@
+{
+  "measuredVersion": "2.0.1.0",
+  "mode": "window",
+  "state": "connected idle",
+  "visibilityVerification": "Operator observed the visible connected application before and after measurement; the script did not change window visibility.",
+  "startedUtc": "2026-11-06T00:32:00.0829098Z",
+  "finishedUtc": "2026-11-06T00:42:00.3206933Z",
+  "measuredSeconds": 600.063887,
+  "requestedSeconds": 600,
+  "logicalProcessors": 16,
+  "intervalSeconds": 5,
+  "sampleCount": 120,
+  "cpuIntervalCount": 119,
+  "maximumSamplingGapSeconds": 5.103053400000022,
+  "samplingGapsOverTwiceInterval": 0,
+  "completed": true,
+  "valid": true,
+  "issues": [],
+  "averageCpuPercent": 0.38797952192047175,
+  "peakPrivateBytes": 199925760,
+  "peakPrivateMiB": 190.6640625,
+  "peakPrivateDecimalMB": 199.92576,
+  "cpuTargetPercent": 0.5,
+  "memoryTargetBytes": 250000000,
+  "cpuTargetPassed": true,
+  "memoryTargetPassed": true,
+  "allSamplesContainFourOwnedRoles": true,
+  "roles": [
+    { "role": "ui", "sampleCount": 120, "distinctProcessIdentities": 1 },
+    { "role": "broker", "sampleCount": 120, "distinctProcessIdentities": 1 },
+    { "role": "telegram", "sampleCount": 120, "distinctProcessIdentities": 1 },
+    { "role": "zapret", "sampleCount": 120, "distinctProcessIdentities": 1 }
+  ],
+  "limitations": [
+    "CPU is the sum of sampled owned process CPU time normalized across all 16 logical processors.",
+    "Private memory covers the four owned user-mode processes; kernel and driver memory are not measured.",
+    "Processes and memory peaks occurring entirely between five-second samples can be missed.",
+    "The connected idle state excludes deliberate user traffic and manual diagnostics; PowerShell and CIM measurement overhead is excluded from target CPU.",
+    "This measurement covers version 2.0.1.0 in a visible window. It is not a tray measurement or a benchmark of 2.0.2."
+  ],
+  "sourceEvidence": {
+    "localReport": "output/qa-v2/performance-installed-2.0.1-window.json",
+    "sha256": "cc7e0bb8a0267d5b0498d6bddb3b3a21007e2a632051b97d7bb36fb9a82a82d1",
+    "method": "tests/performance/Measure-Idle.ps1",
+    "publication": "Summary excludes process identifiers, executable paths and raw samples."
+  }
+}
