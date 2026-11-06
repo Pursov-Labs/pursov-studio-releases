@@ -1,0 +1,302 @@
+{
+  "startedUtc": "2026-11-06T00:33:55.3188726Z",
+  "mode": "isolated-lifecycle",
+  "os": {
+    "Caption": "Microsoft Windows Server 2025 Datacenter",
+    "Version": "10.0.26100",
+    "BuildNumber": "26100"
+  },
+  "limits": [
+    "Windows Server runner; Windows 10/11 remain untested.",
+    "No actual reboot, alternate-admin UAC, ordinary-user launch, or sign-in is tested.",
+    "No live Telegram, Discord, YouTube, network-engine connection, UI accessibility, or idle performance test.",
+    "MSI transaction exercised directly; broker-driven update and user restart are separate tests."
+  ],
+  "checks": [
+    {
+      "name": "Authentic candidate is newer than authentic baseline",
+      "passed": true
+    },
+    {
+      "name": "Failure injection changes only the isolated test copy",
+      "passed": true
+    },
+    {
+      "name": "Failure action persists as deferred SYSTEM exit 42",
+      "passed": true
+    },
+    {
+      "name": "Failure action uses an existing Directory table entry",
+      "passed": true
+    },
+    {
+      "name": "Disposable runner starts without PURSOV STUDIO installation or data",
+      "passed": true
+    },
+    {
+      "name": "01-install-baseline exits 0 (actual 0)",
+      "passed": true
+    },
+    {
+      "name": "Installed executable exists for 2.0.0",
+      "passed": true
+    },
+    {
+      "name": "Installed file version is 2.0.0",
+      "passed": true
+    },
+    {
+      "name": "Broker is demand-start LocalSystem",
+      "passed": true
+    },
+    {
+      "name": "Common Startup shortcut exists",
+      "passed": true
+    },
+    {
+      "name": "Common Startup shortcut uses per-user sign-in mode",
+      "passed": true
+    },
+    {
+      "name": "Apps and Features has the installed version",
+      "passed": true
+    },
+    {
+      "name": "Installed broker reaches Running then Stopped",
+      "passed": true
+    },
+    {
+      "name": "Baseline broker security descriptor is readable",
+      "passed": true
+    },
+    {
+      "name": "02-forced-rollback exits 1603 (actual 1603)",
+      "passed": true
+    },
+    {
+      "name": "Failure occurs after initializer and executes rollback helper",
+      "passed": true
+    },
+    {
+      "name": "Installed executable exists for 2.0.0",
+      "passed": true
+    },
+    {
+      "name": "Installed file version is 2.0.0",
+      "passed": true
+    },
+    {
+      "name": "Broker is demand-start LocalSystem",
+      "passed": true
+    },
+    {
+      "name": "Common Startup shortcut exists",
+      "passed": true
+    },
+    {
+      "name": "Common Startup shortcut uses per-user sign-in mode",
+      "passed": true
+    },
+    {
+      "name": "Apps and Features has the installed version",
+      "passed": true
+    },
+    {
+      "name": "Rollback restores broker service access rights",
+      "passed": true
+    },
+    {
+      "name": "Rollback restores every original installed file byte-for-byte",
+      "passed": true
+    },
+    {
+      "name": "Rollback restores shared payload and active pointer byte-for-byte",
+      "passed": true
+    },
+    {
+      "name": "Rollback preserves per-user settings and synthetic Telegram secret",
+      "passed": true
+    },
+    {
+      "name": "03-upgrade-candidate exits 0 (actual 0)",
+      "passed": true
+    },
+    {
+      "name": "Installed executable exists for 2.0.1",
+      "passed": true
+    },
+    {
+      "name": "Installed file version is 2.0.1",
+      "passed": true
+    },
+    {
+      "name": "Broker is demand-start LocalSystem",
+      "passed": true
+    },
+    {
+      "name": "Common Startup shortcut exists",
+      "passed": true
+    },
+    {
+      "name": "Common Startup shortcut uses per-user sign-in mode",
+      "passed": true
+    },
+    {
+      "name": "Apps and Features has the installed version",
+      "passed": true
+    },
+    {
+      "name": "Installed migration helper passes locked-file and legacy rollback regressions",
+      "passed": true
+    },
+    {
+      "name": "Successful major upgrade removes old product registration",
+      "passed": true
+    },
+    {
+      "name": "Successful upgrade preserves per-user settings and synthetic Telegram secret",
+      "passed": true
+    },
+    {
+      "name": "Successful upgrade preserves custom network list",
+      "passed": true
+    },
+    {
+      "name": "04-uninstall exits 0 (actual 0)",
+      "passed": true
+    },
+    {
+      "name": "Uninstall removes broker service",
+      "passed": true
+    },
+    {
+      "name": "Uninstall removes application executable",
+      "passed": true
+    },
+    {
+      "name": "Uninstall removes CommonStartup shortcut",
+      "passed": true
+    },
+    {
+      "name": "Uninstall removes CommonPrograms shortcut",
+      "passed": true
+    },
+    {
+      "name": "Uninstall removes CommonDesktopDirectory shortcut",
+      "passed": true
+    },
+    {
+      "name": "Uninstall preserves per-user settings and synthetic Telegram secret",
+      "passed": true
+    },
+    {
+      "name": "Uninstall preserves shared user list",
+      "passed": true
+    }
+  ],
+  "transactions": [
+    {
+      "step": "01-install-baseline",
+      "exitCode": 0,
+      "elapsedSeconds": 7.49,
+      "log": "01-install-baseline.log"
+    },
+    {
+      "step": "02-forced-rollback",
+      "exitCode": 1603,
+      "elapsedSeconds": 14.97,
+      "log": "02-forced-rollback.log"
+    },
+    {
+      "step": "03-upgrade-candidate",
+      "exitCode": 0,
+      "elapsedSeconds": 12.48,
+      "log": "03-upgrade-candidate.log"
+    },
+    {
+      "step": "04-uninstall",
+      "exitCode": 0,
+      "elapsedSeconds": 5.87,
+      "log": "04-uninstall.log"
+    }
+  ],
+  "passed": true,
+  "packages": [
+    {
+      "Package": "D:\\a\\_temp\\pursov-packages\\previous\\PURSOV_STUDIO_2.0.0_x64.msi",
+      "Version": "2.0.0",
+      "ProductCode": "{2F9C589C-9F31-4EA6-95D2-96D1E2205403}",
+      "Sha256": "db81281c80e74f9c594791c7fdb7b6e843a1add2d86dd0bf9052e213def0f064"
+    },
+    {
+      "Package": "D:\\a\\_temp\\pursov-packages\\candidate\\PURSOV_STUDIO_2.0.1_x64.msi",
+      "Version": "2.0.1",
+      "ProductCode": "{AD1736A8-9C8F-4692-AF27-BBDFDEA855C7}",
+      "Sha256": "f00a8aef8ad5cf037e2168b08369b7bed86e5a2daec89c43e29c3d560879fd7e"
+    }
+  ],
+  "failureInjection": {
+    "sha256": "968bf0d0e3511670f75712bc578b219d598d6b7e60c1bf9c91b8a8d183d5695d",
+    "action": "Deferred SYSTEM cmd.exe exit 42, after InitializeInstall, before commit",
+    "published": false
+  },
+  "brokerSmoke": {
+    "afterStart": "Running",
+    "afterStop": "Stopped"
+  },
+  "workerRegression": {
+    "log": "migration-worker.log",
+    "exitCode": 0
+  },
+  "finishedUtc": "2026-11-06T00:34:49.7617748Z",
+  "evidence": {
+    "workflowRun": "https://github.com/Pursov-Labs/pursov-studio-releases/actions/runs/42137699802",
+    "commit": "16a73f729d07c7d381c3ede1fd0e1c3a7723fe0c",
+    "baselineTag": "v2.0.0-preview.3",
+    "candidateTag": "v2.0.1-preview.1",
+    "lifecycleChecks": 45,
+    "migrationHelperChecks": [
+      {
+        "name": "Locked completed snapshot is retained without failing restore",
+        "passed": true
+      },
+      {
+        "name": "Retired locked snapshot is not an active transaction",
+        "passed": true
+      },
+      {
+        "name": "Next attempt selects a fresh snapshot while old file remains locked",
+        "passed": true
+      },
+      {
+        "name": "Retired files can be cleaned after the lock is released",
+        "passed": true
+      },
+      {
+        "name": "Cleanup does not suppress unsafe ACL validation",
+        "passed": true
+      },
+      {
+        "name": "Legacy move leaves an empty protected MSI install directory",
+        "passed": true
+      },
+      {
+        "name": "Durable quarantine preserves every legacy fixture byte",
+        "passed": true
+      },
+      {
+        "name": "Rollback restores legacy-only files and retains the durable backup",
+        "passed": true
+      },
+      {
+        "name": "Failed atomic move leaves original and existing backup intact",
+        "passed": true
+      },
+      {
+        "name": "Rollback tolerates a pending marker when move never happened",
+        "passed": true
+      }
+    ],
+    "scope": "Isolated Windows Server 2025 MSI lifecycle; Windows 11 results are separate"
+  }
+}
