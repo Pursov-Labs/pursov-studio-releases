@@ -67,6 +67,47 @@ Console.WriteLine("PASS bounded complete IPC frames");
 Assert(!BrokerService.TryRun(new[] { "--service", "injected" }), "service accepts no arguments");
 Console.WriteLine("PASS service entry argument boundary");
 
+Type configurationType = assembly.GetType("PursovStudio.BrokerServiceConfiguration")!;
+MethodInfo validateConfiguration = protocol.GetMethod("ValidateServiceConfiguration", BindingFlags.Static | BindingFlags.NonPublic)!;
+string expectedExecutable = Path.Combine(AppPaths.InstallRoot, "PursovStudio.exe");
+var configurations = new[]
+{
+    (16u, "\"" + expectedExecutable + "\" --service", "LocalSystem", true),
+    (16u, "\"" + expectedExecutable.ToUpperInvariant() + "\" --service", "localsystem", true),
+    (16u, expectedExecutable + " --service", "LocalSystem", false),
+    (16u, "\"" + expectedExecutable + "\" --service extra", "LocalSystem", false),
+    (16u, "\"" + expectedExecutable + "\" --SERVICE", "LocalSystem", false),
+    (16u, "\"" + expectedExecutable + ".other\" --service", "LocalSystem", false),
+    (16u, "\"C:\\elsewhere\\PursovStudio.exe\" --service", "LocalSystem", false),
+    (32u, "\"" + expectedExecutable + "\" --service", "LocalSystem", false),
+    (16u, "\"" + expectedExecutable + "\" --service", "LocalService", false)
+};
+foreach (var item in configurations)
+{
+    bool accepted = true;
+    try { validateConfiguration.Invoke(null, new[] { Activator.CreateInstance(configurationType, item.Item1, item.Item2, item.Item3) }); }
+    catch (TargetInvocationException ex) when (ex.InnerException is UnauthorizedAccessException) { accepted = false; }
+    Assert(accepted == item.Item4, "SCM executable/account/type policy " + item.Item2);
+}
+string descriptor = (string)protocol.GetField("ServiceSecurityDescriptor", BindingFlags.Static | BindingFlags.NonPublic)!.GetRawConstantValue()!;
+var serviceAcl = new RawSecurityDescriptor(descriptor).DiscretionaryAcl!;
+var interactive = new SecurityIdentifier(WellKnownSidType.InteractiveSid, null);
+var interactiveAces = serviceAcl.OfType<CommonAce>().Where(x => x.SecurityIdentifier.Equals(interactive)).ToArray();
+Assert(interactiveAces.Length == 1 && interactiveAces[0].AceQualifier == AceQualifier.AccessAllowed && interactiveAces[0].AccessMask == 0x15,
+    "Interactive gets only query config, query status and start");
+Console.WriteLine("PASS exact SCM executable/account/type validation and minimal read/start service rights");
+
+// Query metadata for a system service using the same native path, without opening its process or starting it.
+Type native = assembly.GetType("PursovStudio.BrokerNative")!;
+using (var manager = (System.Runtime.InteropServices.SafeHandle)native.GetMethod("OpenSCManager", BindingFlags.Static | BindingFlags.NonPublic)!.Invoke(null, new object?[] { null, null, 1u })!)
+using (var service = (System.Runtime.InteropServices.SafeHandle)native.GetMethod("OpenService", BindingFlags.Static | BindingFlags.NonPublic)!.Invoke(null, new object[] { manager, "EventLog", 1u })!)
+{
+    Assert(!manager.IsInvalid && !service.IsInvalid, "read-only SCM access");
+    object configuration = native.GetMethod("ServiceConfiguration", BindingFlags.Static | BindingFlags.NonPublic)!.Invoke(null, new object[] { service })!;
+    Assert(!string.IsNullOrEmpty((string?)configurationType.GetProperty("BinaryPath")!.GetValue(configuration)), "system service metadata is readable");
+}
+Console.WriteLine("PASS read-only SCM configuration query without SYSTEM process access");
+
 MethodInfo updateGuard = typeof(BrokerService).GetMethod("AssertNoUpdateInProgress", BindingFlags.Static | BindingFlags.NonPublic)!;
 using (var current = System.Diagnostics.Process.GetCurrentProcess())
 {

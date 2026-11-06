@@ -1,0 +1,74 @@
+{
+  "evidenceUtc": "2026-11-06T00:23:39.9904831Z",
+  "releaseTag": "v2.0.0-preview.3",
+  "msiSha256": "db81281c80e74f9c594791c7fdb7b6e843a1add2d86dd0bf9052e213def0f064",
+  "os": {
+    "Caption": "Майкрософт Windows 11 Pro",
+    "Version": "10.0.26200",
+    "BuildNumber": "26200"
+  },
+  "installation": {
+    "passed": true,
+    "exitCode": 0,
+    "previousVersion": "1.0.1.0",
+    "installedVersion": "2.0.0.0",
+    "expectedFiles": 989,
+    "installedFiles": 989,
+    "missing": [],
+    "changed": [],
+    "extra": [],
+    "legacyOnlyFilesStillInstalled": 0,
+    "pdbOrPycacheInstalled": []
+  },
+  "migration": {
+    "newBackupFiles": 1021,
+    "backupVersion": "1.0.1.0",
+    "oldOnlyFilesRemovedFromInstalledTree": 40,
+    "settingsAndTelegramConfigurationUnchangedBeforeFirstLaunch": true,
+    "customListsUnchanged": [
+      {
+        "Name": "list-general-user.txt",
+        "Unchanged": true
+      },
+      {
+        "Name": "ipset-exclude-user.txt",
+        "Unchanged": true
+      },
+      {
+        "Name": "list-exclude-user.txt",
+        "Unchanged": true
+      }
+    ],
+    "protectedEntriesChecked": 3404,
+    "unsafeAclOrReparseEntries": 0,
+    "unfinishedSnapshots": 0,
+    "retiredLockedFileBytes": 94144
+  },
+  "service": {
+    "configuration": {
+      "Name": "PursovStudioBroker",
+      "StartMode": "Manual",
+      "StartName": "LocalSystem",
+      "State": "Stopped",
+      "PathName": "\"C:\\Program Files\\PURSOV STUDIO\\PursovStudio.exe\" --service"
+    },
+    "configurationEvidence": "Elevated MSI completion report",
+    "startupArguments": "--signin",
+    "registeredVersion": "2.0.0",
+    "fullDescriptorStatus": "Unavailable to ordinary token; not treated as installation failure",
+    "effectiveAccessEvidence": "host-service-access-2.0.0.json"
+  },
+  "connection": {
+    "passed": false,
+    "version": "2.0.0.0",
+    "token": "ordinary user",
+    "userVisibleError": "Отказано в доступе",
+    "status": "Broker correction prepared for 2.0.1; post-fix live result not yet recorded",
+    "reportedBy": "Root agent operating the application UI"
+  },
+  "limits": [
+    "Existing Windows 11 installation migration; no clean Windows 11 VM scenario",
+    "No restart, alternate-administrator credentials, or real Telegram/Discord/YouTube user scenarios verified by this report",
+    "No raw settings or Telegram secret included"
+  ]
+}

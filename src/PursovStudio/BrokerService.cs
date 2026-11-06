@@ -344,8 +344,7 @@ public static class BrokerService
         using var manager = BrokerNative.OpenSCManager(null, null, 1);
         using var service = BrokerNative.OpenService(manager, BrokerProtocol.ServiceName, 0x00040000);
         if (service.IsInvalid) throw new Win32Exception(Marshal.GetLastWin32Error());
-        const string sddl = "D:P(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)(A;;LCRP;;;IU)";
-        if (!Native.ConvertStringSecurityDescriptorToSecurityDescriptor(sddl, 1, out IntPtr descriptor, out _)) throw new Win32Exception(Marshal.GetLastWin32Error());
+        if (!Native.ConvertStringSecurityDescriptorToSecurityDescriptor(BrokerProtocol.ServiceSecurityDescriptor, 1, out IntPtr descriptor, out _)) throw new Win32Exception(Marshal.GetLastWin32Error());
         try { if (!Native.SetServiceObjectSecurity(service, 4, descriptor)) throw new Win32Exception(Marshal.GetLastWin32Error()); }
         finally { Native.LocalFree(descriptor); }
     }

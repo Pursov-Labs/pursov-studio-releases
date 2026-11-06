@@ -1,0 +1,92 @@
+{
+  "Utc": "2026-11-06T00:27:47.5049086Z",
+  "InstalledVersion": "2.0.0.0",
+  "Method": "Open and close service handles only; no service action, configuration change or pipe request",
+  "IsElevated": false,
+  "SessionId": 1,
+  "ServiceState": "Stopped",
+  "Checks": [
+    {
+      "Right": "QueryStatus",
+      "Mask": 4,
+      "Allowed": true,
+      "Win32Error": 0,
+      "ExpectedAllowed": true,
+      "MatchesExpected": true
+    },
+    {
+      "Right": "Start",
+      "Mask": 16,
+      "Allowed": true,
+      "Win32Error": 0,
+      "ExpectedAllowed": true,
+      "MatchesExpected": true
+    },
+    {
+      "Right": "StatusAndStart",
+      "Mask": 20,
+      "Allowed": true,
+      "Win32Error": 0,
+      "ExpectedAllowed": true,
+      "MatchesExpected": true
+    },
+    {
+      "Right": "Stop",
+      "Mask": 32,
+      "Allowed": false,
+      "Win32Error": 5,
+      "ExpectedAllowed": false,
+      "MatchesExpected": true
+    },
+    {
+      "Right": "QueryConfig",
+      "Mask": 1,
+      "Allowed": false,
+      "Win32Error": 5,
+      "ExpectedAllowed": false,
+      "MatchesExpected": true
+    },
+    {
+      "Right": "ChangeConfig",
+      "Mask": 2,
+      "Allowed": false,
+      "Win32Error": 5,
+      "ExpectedAllowed": false,
+      "MatchesExpected": true
+    },
+    {
+      "Right": "ReadControl",
+      "Mask": 131072,
+      "Allowed": false,
+      "Win32Error": 5,
+      "ExpectedAllowed": false,
+      "MatchesExpected": true
+    },
+    {
+      "Right": "WriteDacl",
+      "Mask": 262144,
+      "Allowed": false,
+      "Win32Error": 5,
+      "ExpectedAllowed": false,
+      "MatchesExpected": true
+    },
+    {
+      "Right": "WriteOwner",
+      "Mask": 524288,
+      "Allowed": false,
+      "Win32Error": 5,
+      "ExpectedAllowed": false,
+      "MatchesExpected": true
+    },
+    {
+      "Right": "Delete",
+      "Mask": 65536,
+      "Allowed": false,
+      "Win32Error": 5,
+      "ExpectedAllowed": false,
+      "MatchesExpected": true
+    }
+  ],
+  "AllExpectedFor200Policy": true,
+  "FullSecurityDescriptor": "Not available to this ordinary-user token; READ_CONTROL is intentionally denied"
+}

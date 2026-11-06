@@ -1,58 +1,16 @@
 {
-  "run": "https://github.com/Pursov-Labs/pursov-studio-releases/actions/runs/42083023385",
-  "testCommit": "f2cfd18",
-  "packageCommit": "6a95173",
-  "startedUtc": "2026-11-05T18:19:22.1841272Z",
-  "finishedUtc": "2026-11-05T18:20:18.7692814Z",
+  "startedUtc": "2026-11-05T18:56:10.6768424Z",
+  "mode": "isolated-lifecycle",
   "os": {
     "Caption": "Microsoft Windows Server 2025 Datacenter",
     "Version": "10.0.26100",
     "BuildNumber": "26100"
   },
-  "passed": true,
   "limits": [
     "Windows Server runner; Windows 10/11 remain untested.",
     "No actual reboot, alternate-admin UAC, ordinary-user launch, or sign-in is tested.",
     "No live Telegram, Discord, YouTube, network-engine connection, UI accessibility, or idle performance test.",
     "MSI transaction exercised directly; broker-driven update and user restart are separate tests."
-  ],
-  "packages": [
-    {
-      "Version": "1.9.99",
-      "ProductCode": "{6CC9E5F1-5AEF-49F8-BABC-D66E9AE14033}",
-      "Sha256": "9470a70e8962080642eb91bda18fc3f397de636c86329c2128fc3f07356a3351"
-    },
-    {
-      "Version": "2.0.0",
-      "ProductCode": "{F00FF079-E297-42D4-A905-8A3CFC783B8B}",
-      "Sha256": "b4cebac06f5ab7a17300a2c4c4db9809f1f325252319c0e881ef5c00b8f90004"
-    }
-  ],
-  "transactions": [
-    {
-      "step": "01-install-baseline",
-      "exitCode": 0,
-      "elapsedSeconds": 8.78,
-      "log": "01-install-baseline.log"
-    },
-    {
-      "step": "02-forced-rollback",
-      "exitCode": 1603,
-      "elapsedSeconds": 16.46,
-      "log": "02-forced-rollback.log"
-    },
-    {
-      "step": "03-upgrade-candidate",
-      "exitCode": 0,
-      "elapsedSeconds": 12.96,
-      "log": "03-upgrade-candidate.log"
-    },
-    {
-      "step": "04-uninstall",
-      "exitCode": 0,
-      "elapsedSeconds": 5.83,
-      "log": "04-uninstall.log"
-    }
   ],
   "checks": [
     {
@@ -188,6 +146,10 @@
       "passed": true
     },
     {
+      "name": "Installed migration helper passes locked-file and legacy rollback regressions",
+      "passed": true
+    },
+    {
       "name": "Successful major upgrade removes old product registration",
       "passed": true
     },
@@ -231,5 +193,108 @@
       "name": "Uninstall preserves shared user list",
       "passed": true
     }
-  ]
+  ],
+  "transactions": [
+    {
+      "step": "01-install-baseline",
+      "exitCode": 0,
+      "elapsedSeconds": 9.42,
+      "log": "01-install-baseline.log"
+    },
+    {
+      "step": "02-forced-rollback",
+      "exitCode": 1603,
+      "elapsedSeconds": 20.03,
+      "log": "02-forced-rollback.log"
+    },
+    {
+      "step": "03-upgrade-candidate",
+      "exitCode": 0,
+      "elapsedSeconds": 16.44,
+      "log": "03-upgrade-candidate.log"
+    },
+    {
+      "step": "04-uninstall",
+      "exitCode": 0,
+      "elapsedSeconds": 7.24,
+      "log": "04-uninstall.log"
+    }
+  ],
+  "passed": true,
+  "packages": [
+    {
+      "Package": "D:\\a\\_temp\\pursov-packages\\previous\\PURSOV_STUDIO_1.9.99_x64.msi",
+      "Version": "1.9.99",
+      "ProductCode": "{6CC9E5F1-5AEF-49F8-BABC-D66E9AE14033}",
+      "Sha256": "9470a70e8962080642eb91bda18fc3f397de636c86329c2128fc3f07356a3351"
+    },
+    {
+      "Package": "D:\\a\\_temp\\pursov-packages\\candidate\\PURSOV_STUDIO_2.0.0_x64.msi",
+      "Version": "2.0.0",
+      "ProductCode": "{2F9C589C-9F31-4EA6-95D2-96D1E2205403}",
+      "Sha256": "db81281c80e74f9c594791c7fdb7b6e843a1add2d86dd0bf9052e213def0f064"
+    }
+  ],
+  "failureInjection": {
+    "sha256": "fd79069c9524105269d972104036ab6aaf34f86a68a184f9c679102c7682ebbe",
+    "action": "Deferred SYSTEM cmd.exe exit 42, after InitializeInstall, before commit",
+    "published": false
+  },
+  "brokerSmoke": {
+    "afterStart": "Running",
+    "afterStop": "Stopped"
+  },
+  "workerRegression": {
+    "log": "migration-worker.log",
+    "exitCode": 0
+  },
+  "finishedUtc": "2026-11-05T18:57:17.7219651Z",
+  "evidence": {
+    "workflowRun": "https://github.com/Pursov-Labs/pursov-studio-releases/actions/runs/42088967577",
+    "commit": "7816d719d7e68f42a4760fc8ef36fea76f0bfd02",
+    "lifecycleChecks": 45,
+    "migrationHelperChecks": [
+      {
+        "name": "Locked completed snapshot is retained without failing restore",
+        "passed": true
+      },
+      {
+        "name": "Retired locked snapshot is not an active transaction",
+        "passed": true
+      },
+      {
+        "name": "Next attempt selects a fresh snapshot while old file remains locked",
+        "passed": true
+      },
+      {
+        "name": "Retired files can be cleaned after the lock is released",
+        "passed": true
+      },
+      {
+        "name": "Cleanup does not suppress unsafe ACL validation",
+        "passed": true
+      },
+      {
+        "name": "Legacy move leaves an empty protected MSI install directory",
+        "passed": true
+      },
+      {
+        "name": "Durable quarantine preserves every legacy fixture byte",
+        "passed": true
+      },
+      {
+        "name": "Rollback restores legacy-only files and retains the durable backup",
+        "passed": true
+      },
+      {
+        "name": "Failed atomic move leaves original and existing backup intact",
+        "passed": true
+      },
+      {
+        "name": "Rollback tolerates a pending marker when move never happened",
+        "passed": true
+      }
+    ],
+    "scope": "Isolated Windows Server 2025 MSI lifecycle, not the later host connection test"
+  }
 }
