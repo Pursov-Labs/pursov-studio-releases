@@ -16,6 +16,14 @@ public static class SelfTests
         if (!self && !network && !components && !selection) return false;
         int reportAt = Array.IndexOf(args, "--report");
         string path = reportAt >= 0 && reportAt + 1 < args.Length ? args[reportAt + 1] : Path.Combine(AppPaths.DataRoot, self ? "self-test.json" : "network-check.json");
+        string? previousLog = Log.SelfTestFile;
+        if (self) Log.SelfTestFile = Path.GetFullPath(path) + ".log";
+        try { return await RunChecksAsync(self, network, components, selection, path); }
+        finally { Log.SelfTestFile = previousLog; }
+    }
+
+    private static async Task<bool> RunChecksAsync(bool self, bool network, bool components, bool selection, string path)
+    {
         var tests = new List<object>();
         int failed = 0;
         void Test(string name, Action check)
@@ -25,6 +33,22 @@ public static class SelfTests
         }
         if (self)
         {
+            Test("self-test log isolation and redaction", () =>
+            {
+                string? previous = Log.SelfTestFile;
+                Assert(previous != null && !previous.Equals(Path.Combine(AppPaths.DataRoot, "application.log"), StringComparison.OrdinalIgnoreCase));
+                string? before = File.Exists(previous) ? File.ReadAllText(previous) : null;
+                string temporary = Path.GetTempFileName();
+                try
+                {
+                    Log.SelfTestFile = temporary;
+                    Task.Run(() => Log.Write("log-isolation-check token=self-test-secret")).GetAwaiter().GetResult();
+                    string logged = File.ReadAllText(temporary);
+                    Assert(logged.Contains("log-isolation-check") && !logged.Contains("self-test-secret"));
+                    Assert((File.Exists(previous) ? File.ReadAllText(previous) : null) == before);
+                }
+                finally { Log.SelfTestFile = previous; File.Delete(temporary); }
+            });
             Test("independent bounded cleanup and manual stop intent", () => Task.Run(ControllerChecks.RunAsync).GetAwaiter().GetResult());
             Test("legacy settings keep opt-out defaults", () =>
             {

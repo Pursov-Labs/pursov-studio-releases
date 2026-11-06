@@ -6,12 +6,12 @@ on:
       previous_tag:
         description: Published baseline prerelease tag
         required: true
-        default: v1.9.99-test.2
+        default: v2.0.1-preview.1
         type: string
       candidate_tag:
         description: Published candidate prerelease tag
         required: true
-        default: v2.0.0-preview.3
+        default: v2.0.2
         type: string
 
 permissions:

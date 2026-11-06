@@ -2,7 +2,7 @@
   <PropertyGroup>
     <AcceptEula>wix7</AcceptEula>
     <Platform>x64</Platform>
-    <ProductVersion Condition="'$(ProductVersion)' == ''">2.0.1</ProductVersion>
+    <ProductVersion Condition="'$(ProductVersion)' == ''">2.0.2</ProductVersion>
     <OutputName>PURSOV_STUDIO_$(ProductVersion)_x64</OutputName>
     <DefineConstants>StageRoot=$(StageRoot);ProductVersion=$(ProductVersion)</DefineConstants>
     <Cultures>ru-RU</Cultures>

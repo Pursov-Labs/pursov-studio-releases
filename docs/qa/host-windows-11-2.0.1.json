@@ -1,0 +1,161 @@
+{
+  "evidenceUtc": "2026-11-06T00:32:25.8814941Z",
+  "version": "2.0.1",
+  "releaseKind": "preview",
+  "msiSha256": "f00a8aef8ad5cf037e2168b08369b7bed86e5a2daec89c43e29c3d560879fd7e",
+  "os": {
+    "caption": "Windows 11 Pro",
+    "build": "26200"
+  },
+  "upgrade": {
+    "passed": true,
+    "exitCode": 0,
+    "previousVersion": "2.0.0.0",
+    "installedVersion": "2.0.1.0",
+    "startedUtc": "2026-11-06T00:30:26.7025594Z",
+    "finishedUtc": "2026-11-06T00:30:42.9127188Z"
+  },
+  "installedFiles": {
+    "passed": true,
+    "expected": 989,
+    "actual": 989,
+    "missing": [],
+    "changed": [],
+    "extra": [],
+    "pdbOrPycache": []
+  },
+  "userFiles": [
+    {
+      "Name": "settings.json",
+      "Unchanged": true,
+      "Evidence": "Early capture before connection",
+      "ObservedUtc": "2026-11-06T00:31:27.4388836Z"
+    },
+    {
+      "Name": "tg-config.json",
+      "Unchanged": true,
+      "Evidence": "Early capture before connection",
+      "ObservedUtc": "2026-11-06T00:31:27.4388836Z"
+    }
+  ],
+  "updaterStateUnchangedAfterLaunch": true,
+  "service": {
+    "configurationAtUpgrade": {
+      "Name": "PursovStudioBroker",
+      "StartMode": "Manual",
+      "StartName": "LocalSystem",
+      "State": "Stopped",
+      "PathName": "\"C:\\Program Files\\PURSOV STUDIO\\PursovStudio.exe\" --service"
+    },
+    "securityDescriptorBefore": "D:P(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)(A;;LCRP;;;IU)S:(AU;FA;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;WD)",
+    "securityDescriptorAfter": "D:P(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)(A;;CCLCRP;;;IU)S:(AU;FA;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;WD)",
+    "descriptorSource": "Elevated MSI upgrade report",
+    "effectiveAccessTokenElevated": false,
+    "effectiveAccessChecks": [
+      {
+        "Right": "QueryStatus",
+        "Mask": 4,
+        "Allowed": true,
+        "Win32Error": 0,
+        "ExpectedAllowed": true,
+        "MatchesExpected": true
+      },
+      {
+        "Right": "Start",
+        "Mask": 16,
+        "Allowed": true,
+        "Win32Error": 0,
+        "ExpectedAllowed": true,
+        "MatchesExpected": true
+      },
+      {
+        "Right": "QueryConfig",
+        "Mask": 1,
+        "Allowed": true,
+        "Win32Error": 0,
+        "ExpectedAllowed": true,
+        "MatchesExpected": true
+      },
+      {
+        "Right": "StatusConfigAndStart",
+        "Mask": 21,
+        "Allowed": true,
+        "Win32Error": 0,
+        "ExpectedAllowed": true,
+        "MatchesExpected": true
+      },
+      {
+        "Right": "Stop",
+        "Mask": 32,
+        "Allowed": false,
+        "Win32Error": 5,
+        "ExpectedAllowed": false,
+        "MatchesExpected": true
+      },
+      {
+        "Right": "ChangeConfig",
+        "Mask": 2,
+        "Allowed": false,
+        "Win32Error": 5,
+        "ExpectedAllowed": false,
+        "MatchesExpected": true
+      },
+      {
+        "Right": "ReadControl",
+        "Mask": 131072,
+        "Allowed": false,
+        "Win32Error": 5,
+        "ExpectedAllowed": false,
+        "MatchesExpected": true
+      },
+      {
+        "Right": "WriteDacl",
+        "Mask": 262144,
+        "Allowed": false,
+        "Win32Error": 5,
+        "ExpectedAllowed": false,
+        "MatchesExpected": true
+      },
+      {
+        "Right": "WriteOwner",
+        "Mask": 524288,
+        "Allowed": false,
+        "Win32Error": 5,
+        "ExpectedAllowed": false,
+        "MatchesExpected": true
+      },
+      {
+        "Right": "Delete",
+        "Mask": 65536,
+        "Allowed": false,
+        "Win32Error": 5,
+        "ExpectedAllowed": false,
+        "MatchesExpected": true
+      }
+    ],
+    "accessProbeMethod": "Open and close handles only; no service action, configuration change or pipe request"
+  },
+  "technicalConnection": {
+    "passed": true,
+    "version": "2.0.1.0",
+    "token": "ordinary user, not elevated",
+    "reportedBy": "Root agent operating the application UI",
+    "displayedState": "Подключено",
+    "displayedCheckTime": "2026-11-06 03:31 Europe/Moscow",
+    "telegram": "Прокси отвечает",
+    "discord": "Соединение отвечает",
+    "youtube": "Видеофрагмент получен",
+    "ownedPythonListener": "127.0.0.1:1443",
+    "limits": [
+      "No real Telegram message or Discord voice call verified",
+      "YouTube fragment probe is not a sustained playback test"
+    ]
+  },
+  "performance": "Separate 10-minute measurements are in progress; no performance conclusion in this report",
+  "historicalFailure": "2.0.0 ordinary-user connection failed with access denied; retained in separate version-specific evidence",
+  "limits": [
+    "Existing Windows 11 installation; no clean Windows 10/11 VM scenario",
+    "No reboot, alternate-administrator credentials, app-button update, or real communication scenario verified by this report",
+    "No raw user settings or Telegram secret included"
+  ]
+}

@@ -86,6 +86,7 @@ public interface ITgService : IAsyncDisposable
 public static class Log
 {
     private static readonly object Gate = new();
+    internal static string? SelfTestFile { get; set; }
     public static event Action<string>? Written;
     public static void Write(string message)
     {
@@ -96,8 +97,8 @@ public static class Log
         {
             try
             {
-                Directory.CreateDirectory(AppPaths.DataRoot);
-                string path = Path.Combine(AppPaths.DataRoot, "application.log");
+                string path = SelfTestFile ?? Path.Combine(AppPaths.DataRoot, "application.log");
+                Directory.CreateDirectory(Path.GetDirectoryName(path)!);
                 if (File.Exists(path) && new FileInfo(path).Length > 1_000_000) File.Move(path, path + ".previous", true);
                 File.AppendAllText(path, line + Environment.NewLine);
             }
